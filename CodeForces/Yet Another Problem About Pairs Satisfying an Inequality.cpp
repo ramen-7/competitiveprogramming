@@ -4,14 +4,23 @@ using namespace std;
 /* clang-format off */
 
 /* TYPES  */
+#define F first
+#define S second
+#define vec vector
+#define pb push_back
+#define pll pair<ll, ll>
+#define pdd pair<ld, ld>
+#define all(m) m.begin(), m.end()
 #define ll long long
 #define pii pair<int, int>
-#define pll pair<long long, long long>
 #define vi vector<int>
 #define vll vector<long long>
 #define mii map<int, int>
 #define si set<int>
 #define sc set<char>
+#define usi unordered_set<int>
+#define usll unordered_set<long long>
+const char enl = '\n';
 
 /* FUNCTIONS */
 #define f(i,s,e) for(long long int i=s;i<e;i++)
@@ -46,24 +55,6 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
-		}
-	return false;
-}
  
 int main() {
 	ios_base::sync_with_stdio(0);
@@ -74,15 +65,38 @@ int main() {
     while (t --> 0) {
     	ll n;
     	cin >> n;
-    	vector<ll> arr(n);
-    	for (int i = 0; i < n; i++) {
+    	vector<int> arr(n+1);
+    	for (int i = 1; i <= n; i++) {
     		cin >> arr[i];
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
-		} else {
-			no();
+    	vector<int> seen;
+    	ll ans = 0;
+    	
+    	for (int i = 1; i <= n; i++) {
+    		if (arr[i] < (i)) {
+    			if (seen.size() == 0) {
+    				seen.pb(i);
+    				continue;
+				}
+    			auto insert_idx = lower_bound(seen.begin(), seen.end(), arr[i]) - seen.begin();
+//    			print_v(seen);
+//    			cout << enl;
+//    			cout << "insert_idx of " << arr[i] << " = " << insert_idx << enl;
+    			if (insert_idx > 0) {
+//    				cout << seen[insert_idx-1] << " < " << arr[i] << enl;	
+					if (seen[insert_idx-1] < arr[i]) {
+//						cout << seen[insert_idx-1] << " < " << arr[i] << enl;	
+						ans += (insert_idx)*1LL;
+					}		
+				}
+    			seen.pb(i);
+//    			print_v(seen);
+//    			cout << enl;
+			}
+//			cout << "----------------" << enl;
 		}
+		
+		cout << "ans = " << ans << enl;
+    	
 	}
 }

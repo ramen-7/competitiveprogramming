@@ -46,25 +46,37 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
+
+
+bool solve(vector<ll>& arr)  {
+	vector<ll> a;
+	unordered_map<ll, int> hashmap;
+	for (int i: arr) {
+		if (hashmap[i] < 3) {
+			hashmap[i]++;
 		}
+	}
+	for (auto entry: hashmap) {
+		for (int i = 0; i < entry.second; i++) {
+			a.push_back(entry.first);
+		}
+	}
+//	for (int i: a) {
+//		cout << i << " ";
+//	}
+//	cout << endl;
+	for (int i = 0; i < a.size(); i++) {
+		for (int j = i+1; j < a.size(); j++) {
+			for (int k = j+1; k < a.size(); k++) {
+				if ((a[i] + a[j] + a[k])%10 == 3) {
+					return true;
+				}
+			}
+		}
+	}
 	return false;
 }
- 
+
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -72,14 +84,15 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
+    	int n;
     	cin >> n;
     	vector<ll> arr(n);
     	for (int i = 0; i < n; i++) {
-    		cin >> arr[i];
+    		ll inp;
+    		cin >> inp;
+    		arr[i] = inp%10;
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
+    	if (solve(arr)) {
     		yes();
 		} else {
 			no();

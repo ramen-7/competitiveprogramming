@@ -46,25 +46,7 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
-		}
-	return false;
-}
- 
+
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -72,17 +54,22 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
-    	cin >> n;
-    	vector<ll> arr(n);
-    	for (int i = 0; i < n; i++) {
-    		cin >> arr[i];
+    	ll m, k, ak, a1;
+    	cin >> m >> k >> a1 >> ak;
+    	ll rem = m - (min(ak, (m/k)) * k);
+    	rem = max(0ll, rem-a1);
+    	
+    	// fancy coins required
+    	ll ans = ((rem/k) + (rem%k));
+    	
+    	// if we have a1s to spare, because we need (rem%k) fancy coins, 
+    	// so instead we use 1 fk, which gives leaves us with k - (rem%k)
+    	// to be fulfilled
+    	if (a1 >= (k - (rem%k))) {
+    		ll ans2 = 1 + (rem/k);
+    		ans = min(ans, ans2);
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
-		} else {
-			no();
-		}
-	}
+		
+		cout << ans << "\n";
+    }
 }

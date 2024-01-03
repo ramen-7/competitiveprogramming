@@ -46,23 +46,21 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
+ 
+int solve(unordered_map<int, int>& hashmap) {
+	int ans = INT_MIN;
+	for (auto& entry: hashmap) {
+		int key1 = entry.first;
+		int val1 = entry.second;
+		for (auto& entry2: hashmap) {
+			int key2 = entry2.first;
+			int val2 = entry2.second;
+			if (gcd(key1, key2) == 1) {
+				ans = max(ans, (val1 + val2));
 			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
 		}
-	return false;
+	}
+	return ans == INT_MIN? -1: ans;
 }
  
 int main() {
@@ -72,17 +70,19 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
+    	int n;
     	cin >> n;
-    	vector<ll> arr(n);
+//    	cout << "n = " << n << endl;
+    	int arr[n];
     	for (int i = 0; i < n; i++) {
     		cin >> arr[i];
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
-		} else {
-			no();
+		unordered_map<int, int> hashmap;
+		for (int i = n-1; i >= 0; i--) {
+			if (hashmap.find(arr[i]) == hashmap.end()) {
+				hashmap[arr[i]] = (i+1);
+			}
 		}
+		cout << solve(hashmap) << "\n";
 	}
 }

@@ -46,25 +46,21 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
+bool solve(unordered_set<string>& seen, string& cur) {
+//	cout << "cur = " << cur << endl;
+	for (int i = 0; i < cur.size()-1; i++) {
+		string first = cur.substr(0, i+1);
+		int rem = cur.size() - i;
+		string second = cur.substr(i + 1, rem);
+//		cout << first << " + " << second << endl;		
+		if (seen.find(first) != seen.end() && seen.find(second) != seen.end()) {
+			return true;
 		}
+	}
 	return false;
 }
- 
+
+
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -72,17 +68,24 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
+		int n;
     	cin >> n;
-    	vector<ll> arr(n);
+    	vector<string> arr(n);
+    	unordered_set<string> seen;
+    	// create a map of string with their sizes, max size is 8
     	for (int i = 0; i < n; i++) {
     		cin >> arr[i];
+    		seen.insert(arr[i]);
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
-		} else {
-			no();
+		
+		for (int i = 0; i < n; i++) {
+			bool cur = solve(seen, arr[i]);
+			if (cur) {
+				cout << 1;
+			} else {
+				cout << 0;
+			}
 		}
+		cout << "\n";
 	}
 }

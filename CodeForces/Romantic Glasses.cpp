@@ -20,6 +20,22 @@ using namespace std;
 #define pb push_back
 #define eb emplace_back
 
+
+struct custom_hash {
+    static uint64_t splitmix64(uint64_t x) {
+        // http://xorshift.di.unimi.it/splitmix64.c
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(uint64_t x) const {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
+
 /* PRINTS */
 template <class T>
 void print_v(vector<T> &v) { cout << "{"; for (auto x : v) cout << x << ","; cout << "\b}"; }
@@ -47,9 +63,10 @@ typedef long long int int64;
 typedef unsigned long long int  uint64;
 
 bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
+	unordered_map<ll, ll, custom_hash> seen;
     	ll preOdd = 0;
     	ll preEve = 0;
+    	seen[0] = 1;
     	for (int i = 0; i < arr.size(); i++)  {
     		if (i % 2 == 0) {
     			preEve += arr[i];
@@ -57,10 +74,10 @@ bool solve(vector<ll>& arr) {
 				preOdd += arr[i];
 			}
 			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
+			if (seen.find(dif) != seen.end()) {
 				return true;
 			}
-			seen.insert(dif);
+			seen[dif] = 1;
 		}
 	return false;
 }

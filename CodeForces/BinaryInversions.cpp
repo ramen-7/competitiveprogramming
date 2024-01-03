@@ -4,14 +4,23 @@ using namespace std;
 /* clang-format off */
 
 /* TYPES  */
+#define F first
+#define S second
+#define vec vector
+#define pb push_back
+#define pll pair<ll, ll>
+#define pdd pair<ld, ld>
+#define all(m) m.begin(), m.end()
 #define ll long long
 #define pii pair<int, int>
-#define pll pair<long long, long long>
 #define vi vector<int>
 #define vll vector<long long>
 #define mii map<int, int>
 #define si set<int>
 #define sc set<char>
+#define usi unordered_set<int>
+#define usll unordered_set<long long>
+const char enl = '\n';
 
 /* FUNCTIONS */
 #define f(i,s,e) for(long long int i=s;i<e;i++)
@@ -72,17 +81,53 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
+    	int n;
     	cin >> n;
-    	vector<ll> arr(n);
+    	vector<int> arr(n);
     	for (int i = 0; i < n; i++) {
     		cin >> arr[i];
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
-		} else {
-			no();
+    	int zeroToRight = 0;
+    	int onesToLeft = 0;
+    	vector<int> ZTR1(n, 0);
+    	vector<int> OTL1(n, 0);
+    	vector<int> ZTR0(n, 0);
+    	vector<int> OTL0(n, 0);
+    	
+    	for (int i = 0; i < n; i++) {
+    		if (arr[i] == 1) {
+    			OTL1[i] = onesToLeft;
+    			onesToLeft++;
+			} else {
+				OTL0[i] = onesToLeft;
+			}
 		}
+		
+		
+		int score = 0;
+		for (int i = n-1; i >= 0; i--) {
+			if (arr[i] == 0) {
+				ZTR0[i] = zeroToRight;
+				zeroToRight++;
+			} else {
+				ZTR1[i] = zeroToRight;
+				score += zeroToRight;
+			}
+		}
+    	
+    	
+    	int ans = INT_MIN;
+    	for (int i = 0; i < n; i++) {
+    		// if we flip arr[i] == 1 to 0
+    		int new_score = 0;
+    		if (arr[i] == 1) {
+    			new_score = score + OTL1[i] - ZTR1[i];
+			} else {
+				new_score = score + ZTR0[i] - OTL0[i];
+			}
+			ans = max(new_score, ans);
+		}
+		
+		cout << ans << enl;
 	}
 }

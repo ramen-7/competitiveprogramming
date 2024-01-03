@@ -4,6 +4,13 @@ using namespace std;
 /* clang-format off */
 
 /* TYPES  */
+#define F first
+#define S second
+#define vec vector
+#define pb push_back
+#define pll pair<ll, ll>
+#define pdd pair<ld, ld>
+#define all(m) m.begin(), m.end()
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<long long, long long>
@@ -12,6 +19,8 @@ using namespace std;
 #define mii map<int, int>
 #define si set<int>
 #define sc set<char>
+#define usi unordered_set<int>
+#define usll unordered_set<long long>
 
 /* FUNCTIONS */
 #define f(i,s,e) for(long long int i=s;i<e;i++)
@@ -72,17 +81,53 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
-    	cin >> n;
-    	vector<ll> arr(n);
-    	for (int i = 0; i < n; i++) {
-    		cin >> arr[i];
+    	int n, m;
+    	cin >> n >> m;
+    	vector<vector<pii>> adj(n);
+    	for (int i = 0; i < m; i++) {
+    		int u, v, w;
+    		cin >> u >> v >> w;
+    		adj[u-1].push_back({w, v-1}); // {cost and n}
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
-		} else {
-			no();
+		vector<int> bike(n);
+		for (int i = 0; i < n; i++) {
+			cin >> bike[i];
 		}
+		for (int i = 0; i < n; i++) {
+			vector<pii> neighs = adj[i];
+			for (int j = 0; j < neighs.size(); j++) {
+				auto cur_pair = adj[i][j];
+				int new_weight = cur_pair.first * bike[i];
+				adj[i][j] = {new_weight, cur_pair.second};
+			}
+		}
+		for (int i = 0; i < n; i++) {
+			vector<pii> neighs = adj[i];
+			cout << "v = " << i << ": ";
+			for (int j = 0; j < neighs.size(); j++) { 
+				auto cur_pair = adj[i][j];
+				cout << "(" << cur_pair.second << ", " << cur_pair.first << ")";
+			}
+			cout << endl;
+		}
+		vector<int> ans(n, INT_MAX);
+		priority_queue<pii, vector<pii>, greater<pii>> pq;
+		pq.push({0, 0});
+		while (!pq.empty()) {
+			auto cur_pair = pq.top();
+			pq.pop();
+            int cur_dist = cur_pair.first;
+            int cur_node = cur_pair.second;
+            for (int i = 0; i < adj[cur_node].size(); i++) {
+                int neigh = adj[cur_node][i].second;
+                int neigh_dist = adj[cur_node][i].first;
+                int new_dist = neigh_dist + cur_dist;
+                if (new_dist < ans[neigh]) {
+                    ans[neigh] = new_dist;
+                    pq.push({new_dist, neigh});
+                }
+            }
+		}
+//		cout << ans[n-1] << "\n";
 	}
 }
