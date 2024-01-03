@@ -46,24 +46,6 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
-		}
-	return false;
-}
  
 int main() {
 	ios_base::sync_with_stdio(0);
@@ -75,12 +57,16 @@ int main() {
     	ll n;
     	cin >> n;
     	vector<ll> arr(n);
+    	ll prefixSum = 0;
     	for (int i = 0; i < n; i++) {
     		cin >> arr[i];
+    		prefixSum += arr[i];
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
+		long double sqr = sqrtl(prefixSum);
+		ll sqri = sqr;
+//		cout << sqr << " - " << sqri << "\n";
+		if (sqr - sqri == 0) {
+			yes();
 		} else {
 			no();
 		}

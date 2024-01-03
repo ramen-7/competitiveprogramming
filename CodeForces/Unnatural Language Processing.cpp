@@ -46,24 +46,6 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
-		}
-	return false;
-}
  
 int main() {
 	ios_base::sync_with_stdio(0);
@@ -72,17 +54,39 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
-    	cin >> n;
-    	vector<ll> arr(n);
-    	for (int i = 0; i < n; i++) {
-    		cin >> arr[i];
+    	unordered_set<char> v({'a', 'e'});
+		unordered_set<char> c({'b', 'c', 'd'});
+		int n;
+		string s;
+		cin >> n >> s;
+		int i = 0;
+		string ans = "";
+		int lastidx = 0;
+		for (i = 0; i < n-2; i++) {
+			if ((i + 2) < n && c.find(s[i]) != c.end() && v.find(s[i+1]) != v.end() && c.find(s[i+2]) != c.end()) {
+				if ((i + 3) < n && v.find(s[i+3]) == v.end()) {
+					cout << s[i] << s[i+1] << s[i+2] << ".";
+					i += 2;	
+					lastidx = (i+1);
+				} else if (((i + 3) < n && v.find(s[i+3]) != v.end())) {
+					cout << s[i] << s[i+1] << ".";
+					i += 1;
+					lastidx = (i+1);
+				}
+//				cout << ans << endl;
+			} 
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
+//		cout << lastidx << endl;
+		i = lastidx;
+		if ((i + 2) == (n-1) && c.find(s[i]) != c.end() && v.find(s[i+1]) != v.end() && c.find(s[i+2]) != c.end()) {
+//			cout << "lulla";
+			cout << s[i] << s[i+1] << s[i+2];
+		} else if ((i + 1) == (n-1) && c.find(s[i]) != c.end() && v.find(s[i+1]) != v.end()) {
+//			cout << "bhosda";
+			cout << s[i] << s[i+1];
 		} else {
-			no();
+			cout << "unexpected" << "\n";
 		}
+		cout << "\n";
 	}
 }

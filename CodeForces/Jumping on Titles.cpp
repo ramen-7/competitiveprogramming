@@ -19,6 +19,22 @@ using namespace std;
 #define rf(i,e,s) for(long long int i=e-1;i>=s;i--)
 #define pb push_back
 #define eb emplace_back
+const char enl = '\n';
+
+struct custom_hash {
+    static uint64_t splitmix64(uint64_t x) {
+        // http://xorshift.di.unimi.it/splitmix64.c
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(uint64_t x) const {
+        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(x + FIXED_RANDOM);
+    }
+};
 
 /* PRINTS */
 template <class T>
@@ -46,23 +62,42 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
+void solve(string& s) {
+	// we keep the indices here
+	vector<vector<int>> count(26);
+	int n = s.size();
+	int start = s[0] - 'a';
+	int end = s[n-1] - 'a';
+	for (int i = 0; i < n; i++) {
+		count[s[i] - 'a'].pb(i);
+	}
+	vector<int> ans;
+//	ans.pb(1);
+	if (start <= end) {
+		for (int i = start; i <= end; i++) {
+			if (count[i].size() > 0) {
+//				ll dif = (i - start)*1LL;
+				for (int idx: count[i]) {
+					ans.pb(idx+1);
+				}
 			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
 		}
-	return false;
+	} else {
+		for (int i = start; i >= end; i--) {
+			if (count[i].size() > 0) {
+//				ll dif = (i - start)*1LL;
+				for (int idx: count[i]) {
+					ans.pb(idx+1);
+				}
+			}
+		}
+	}
+	
+	cout << abs(end-start) << " " << ans.size() << enl;
+	for (int i: ans) {
+		cout << i << " ";
+	}
+	cout << enl;
 }
  
 int main() {
@@ -72,17 +107,8 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
-    	cin >> n;
-    	vector<ll> arr(n);
-    	for (int i = 0; i < n; i++) {
-    		cin >> arr[i];
-		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
-		} else {
-			no();
-		}
+    	string inp;
+    	cin >> inp;
+    	solve(inp);
 	}
 }

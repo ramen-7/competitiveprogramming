@@ -46,25 +46,7 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
-		}
-	return false;
-}
- 
+
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -74,15 +56,62 @@ int main() {
     while (t --> 0) {
     	ll n;
     	cin >> n;
-    	vector<ll> arr(n);
+    	vector<ll> pos;
+    	vector<ll> neg;
+    	
     	for (int i = 0; i < n; i++) {
-    		cin >> arr[i];
+    		ll cur;
+    		cin >> cur;
+    		if (cur >= 0) {
+//    			cout << "pos" << endl;
+    			pos.push_back(cur);
+			} else {
+//				cout << "neg" << endl;
+				neg.push_back(cur);
+			}
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
+		
+		if (pos.size() > 0) {
+//			cout << "here" << endl;
+			sort(pos.begin(), pos.end());	
+		}
+		if (neg.size() > 0) {
+//			cout << "here" << endl;
+			sort(neg.begin(), neg.end());	
+		}
+		
+		
+		
+		ll ans = 0;
+//		cout << ans << endl;
+		if (neg.size() % 2 == 0) {
+//			cout << "even size" << endl;
+			for (int i = 0; i < neg.size(); i++) {
+				ans -= neg[i];
+			}
 		} else {
-			no();
+//			cout << "odd size" << endl;
+			for (int i = 0; i < neg.size()-1; i++) {
+//				cout << "abs = " << ans << "\n";
+				ans -= neg[i];
+			}
+			
+			if (pos.size() > 0 && abs(neg[neg.size()-1]) > pos[0]) {
+				ans -= pos[0];
+				pos[0] = abs(neg[neg.size() - 1]);
+			} else {
+				ans += neg[neg.size() - 1];
+			}
+//			cout << "neg added = " << ans << "\n";
+//			cout << "abs = " << ans << "\n";
 		}
-	}
+//		cout << "abs = " << ans << "\n";
+//		ans = abs(ans);
+		
+		for (int i = 0; i < pos.size(); i++) {
+			ans += pos[i];
+		}
+		
+		cout << ans << "\n";
+    }
 }

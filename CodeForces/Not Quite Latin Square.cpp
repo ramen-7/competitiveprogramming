@@ -46,24 +46,6 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
-		}
-	return false;
-}
  
 int main() {
 	ios_base::sync_with_stdio(0);
@@ -72,17 +54,27 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
-    	cin >> n;
-    	vector<ll> arr(n);
-    	for (int i = 0; i < n; i++) {
-    		cin >> arr[i];
+    	vector<vector<bool>> rmap(3, vector<bool>(3, false));
+    	vector<vector<bool>> cmap(3, vector<bool>(3, false));
+    	int row, col;
+    	for (int i = 0; i < 3; i++) {
+    		for (int j = 0; j < 3; j++) {
+    			char cur;
+    			cin >> cur;
+    			if (cur == '?') {
+    				row = i;
+    				col = j;
+				} else {
+					rmap[i][cur - 'A'] = true;
+    				cmap[j][cur - 'A'] = true;	
+				}
+			}
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
-		} else {
-			no();
+		for (int i = 0; i < 3; i++) {
+			if (!rmap[row][i]) {
+				cout << (char)(i + 'A') << "\n";
+				break;
+			}
 		}
 	}
 }

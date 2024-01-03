@@ -12,7 +12,6 @@ using namespace std;
 #define mii map<int, int>
 #define si set<int>
 #define sc set<char>
-
 /* FUNCTIONS */
 #define f(i,s,e) for(long long int i=s;i<e;i++)
 #define cf(i,s,e) for(long long int i=s;i<=e;i++)
@@ -46,24 +45,26 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
+bool isPrime(long long x) {
+	if (x < 2) {
+		return false;
+	}
+	if (x == 2) {
+		return true;
+	}
+	for (int i = 2; i <= sqrt(x); i++) {
+		if (x % i == 0) {
+			return false;
 		}
-	return false;
+	}
+	return true;
 }
+
+bool isInteger(long double x) {
+	long long y = x;
+	long double diff = y-x;
+	return diff == 0.0;
+}                
  
 int main() {
 	ios_base::sync_with_stdio(0);
@@ -72,17 +73,18 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
-    	cin >> n;
-    	vector<ll> arr(n);
-    	for (int i = 0; i < n; i++) {
-    		cin >> arr[i];
-		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
+    	ll cur;
+    	cin >> cur;
+		
+		long double sq = sqrtl(cur);
+		if (cur!=1 && isInteger(sq) && isPrime((ll)sq)) {
+			yes();
 		} else {
 			no();
 		}
+		
+		
+//		cout << sq2 << endl;
+		
 	}
 }

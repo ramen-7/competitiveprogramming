@@ -46,25 +46,21 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
+
+
+void solve(ll* arr, int n, ll* ans)  {
+	
+	for (int i = 1; i < n; i++) {
+		if (arr[i] != 0 && arr[i] <= ans[i-1]) {
+			ans[0] = -1;
+			return;
+		} else {
+			ans[i] = ans[i-1] + arr[i];
 		}
-	return false;
+	}
+	return;
 }
- 
+
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -72,17 +68,22 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
+    	int n;
     	cin >> n;
-    	vector<ll> arr(n);
+    	ll arr[n];
     	for (int i = 0; i < n; i++) {
     		cin >> arr[i];
 		}
-    	bool ans = solve(arr);
-    	if (ans) {
-    		yes();
+    	ll ans[n];
+    	ans[0] = arr[0];
+    	solve(arr, n, ans);
+    	if (ans[0] == -1) {
+    		cout << -1;
 		} else {
-			no();
+			for (int i = 0; i < n; i++) {
+    			cout << ans[i] << " ";
+			}	
 		}
+		cout << endl;
 	}
 }
