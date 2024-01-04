@@ -46,16 +46,15 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-void solve(vector<ll>& A, vector<ll>& B, int n) {
-	sort(A.begin(), A.end());
-	sort(B.begin(), B.end(), greater<>());
-	
-	print_v(A);
-	enl;
-	print_v(B);
-	enl;
+void solve(vector<ll>& A, vector<ll>& B, ll n) {
+    sort(A.begin(), A.end());
+    sort(B.begin(), B.end());
+    
+    print_v(A);
+    print_v(B);
+    
 }
-
+ 
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -65,7 +64,7 @@ int main() {
     while (t --> 0) {
     	ll n;
     	cin >> n;
-    	vector<ll> A(n), B(n);
+    	vector<ll> A[n], B[n];
     	for (int i = 0; i < n; i++) {
     	    cin >> A[i];
     	} 
