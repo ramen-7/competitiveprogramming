@@ -46,16 +46,7 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-void solve(vector<ll>& A, vector<ll>& B, int n) {
-	sort(A.begin(), A.end());
-	sort(B.begin(), B.end(), greater<>());
-	
-	print_v(A);
-	enl;
-	print_v(B);
-	enl;
-}
-
+ 
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -63,15 +54,27 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n;
+    	int n;
     	cin >> n;
-    	vector<ll> A(n), B(n);
+    	string s;
+    	cin >> s;
+    	int win = (n/2) + 1;
+    	string ans = "";
     	for (int i = 0; i < n; i++) {
-    	    cin >> A[i];
-    	} 
-    	for (int i = 0; i < n; i++) {
-    	    cin >> B[i];
-    	} 
-    	solve(A, B, n);
+    		if (s[i] == 'R') {
+    			win--;
+    			ans += 'P';
+			} else if (s[i] != 'R' && win < (n-i)) {
+				ans += 'P';
+			} else if (s[i] != 'R' && win >= (n-i)) {
+				if (s[i] == 'S') {
+					ans += 'R';
+				} else if (s[i] == 'P')  {
+					ans += 'S';
+				}
+				win--;
+			}
+		}
+		cout << ans << enl;
 	}
 }
