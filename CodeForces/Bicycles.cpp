@@ -8,7 +8,6 @@ using namespace std;
 #define S second
 #define vec vector
 #define pb push_back
-#define pll pair<ll, ll>
 #define pdd pair<ld, ld>
 #define all(m) m.begin(), m.end()
 #define ll long long
@@ -48,6 +47,7 @@ void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << "
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
 void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
+const char enl = '\n';
 
 /*  All Required define Pre-Processors and typedef Constants */
 typedef long int int32;
@@ -55,23 +55,48 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-bool solve(vector<ll>& arr) {
-	unordered_set<ll> seen;
-    	ll preOdd = 0;
-    	ll preEve = 0;
-    	for (int i = 0; i < arr.size(); i++)  {
-    		if (i % 2 == 0) {
-    			preEve += arr[i];
-			} else {
-				preOdd += arr[i];
-			}
-			ll dif = preEve - preOdd;
-			if (dif == 0 || seen.find(dif) != seen.end()) {
-				return true;
-			}
-			seen.insert(dif);
+void solve(vector<vector<pll>>& adj, vector<ll>& s, int n) {
+	
+	vector<vector<ll>> dist(n, vector<ll>(1001, LONG_MAX));
+	vector<vector<bool>> visited(n, vector<bool>(1001, false));
+	priority_queue<array<ll, 3>, vector<array<ll, 3>>, greater<array<ll, 3>>> pq;
+	dist[0][0] = 0;
+	pq.push({0, 0, 0});
+		
+	while (!pq.empty()) {
+		ll city = pq.top()[1];
+		ll bike = pq.top()[2];
+		pq.pop();
+		
+		if (city == n-1) {
+			cout << dist[city][bike] << enl;
+			return;
 		}
-	return false;
+		
+		// if we have already visited this city on this bike
+		if (visited[city][bike]) {
+			continue;
+		}
+		visited[city][bike] = true;
+		
+		for (auto neigh: adj[city]) {
+			ll nbr = neigh.second;
+			ll cost = neigh.first;
+			
+			ll newBike = bike;
+			if (s[nbr] < s[bike]) {
+				newBike = nbr;
+			}
+			
+			// if OLD dist of nbr on newbike is less than dist of current city
+			// on current bike + cost of reaching the cur city on cur bike
+			if (dist[nbr][newBike] > dist[city][bike] + cost*s[bike]) {
+				dist[nbr][newBike] = dist[city][bike] + cost*s[bike];
+				pq.push({dist[nbr][newBike], nbr, newBike});
+			}
+		}
+	}
+	cout << -1 << enl;
 }
  
 int main() {
@@ -81,53 +106,20 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	int n, m;
+    	ll n, m;
     	cin >> n >> m;
-    	vector<vector<pii>> adj(n);
+    	vector<vector<pll>> adj(n);
     	for (int i = 0; i < m; i++) {
-    		int u, v, w;
+    		ll u, v, w;
     		cin >> u >> v >> w;
     		adj[u-1].push_back({w, v-1}); // {cost and n}
+    		adj[v-1].push_back({w, u-1});
 		}
-		vector<int> bike(n);
+		vector<ll> s(n);
 		for (int i = 0; i < n; i++) {
-			cin >> bike[i];
+			cin >> s[i];
 		}
-		for (int i = 0; i < n; i++) {
-			vector<pii> neighs = adj[i];
-			for (int j = 0; j < neighs.size(); j++) {
-				auto cur_pair = adj[i][j];
-				int new_weight = cur_pair.first * bike[i];
-				adj[i][j] = {new_weight, cur_pair.second};
-			}
-		}
-		for (int i = 0; i < n; i++) {
-			vector<pii> neighs = adj[i];
-			cout << "v = " << i << ": ";
-			for (int j = 0; j < neighs.size(); j++) { 
-				auto cur_pair = adj[i][j];
-				cout << "(" << cur_pair.second << ", " << cur_pair.first << ")";
-			}
-			cout << endl;
-		}
-		vector<int> ans(n, INT_MAX);
-		priority_queue<pii, vector<pii>, greater<pii>> pq;
-		pq.push({0, 0});
-		while (!pq.empty()) {
-			auto cur_pair = pq.top();
-			pq.pop();
-            int cur_dist = cur_pair.first;
-            int cur_node = cur_pair.second;
-            for (int i = 0; i < adj[cur_node].size(); i++) {
-                int neigh = adj[cur_node][i].second;
-                int neigh_dist = adj[cur_node][i].first;
-                int new_dist = neigh_dist + cur_dist;
-                if (new_dist < ans[neigh]) {
-                    ans[neigh] = new_dist;
-                    pq.push({new_dist, neigh});
-                }
-            }
-		}
-//		cout << ans[n-1] << "\n";
+		solve(adj, s, n);
+		
 	}
 }
