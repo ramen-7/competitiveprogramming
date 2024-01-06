@@ -4,12 +4,6 @@ using namespace std;
 /* clang-format off */
 
 /* TYPES  */
-#define F first
-#define S second
-#define vec vector
-#define pb push_back
-#define pdd pair<ld, ld>
-#define all(m) m.begin(), m.end()
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<long long, long long>
@@ -18,8 +12,6 @@ using namespace std;
 #define mii map<int, int>
 #define si set<int>
 #define sc set<char>
-#define usi unordered_set<int>
-#define usll unordered_set<long long>
 
 /* FUNCTIONS */
 #define f(i,s,e) for(long long int i=s;i<e;i++)
@@ -48,57 +40,28 @@ bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a
 void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
 const char enl = '\n';
-
 /*  All Required define Pre-Processors and typedef Constants */
 typedef long int int32;
 typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-void solve(vector<vector<pll>>& adj, vector<ll>& s, int n) {
-	
-	vector<vector<ll>> dist(n, vector<ll>(1001, LONG_MAX));
-	vector<vector<bool>> visited(n, vector<bool>(1001, false));
-	priority_queue<array<ll, 3>, vector<array<ll, 3>>, greater<array<ll, 3>>> pq;
-	dist[0][0] = 0;
-	pq.push({0, 0, 0});
-		
-	while (!pq.empty()) {
-		ll city = pq.top()[1];
-		ll bike = pq.top()[2];
-		pq.pop();
-		
-		if (city == n-1) {
-			cout << dist[city][bike] << enl;
-			return;
-		}
-		
-		// if we have already visited this city on this bike
-		if (visited[city][bike]) {
-			continue;
-		}
-		visited[city][bike] = true;
-		
-		for (auto neigh: adj[city]) {
-			ll nbr = neigh.second;
-			ll cost = neigh.first;
-			
-			ll newBike = bike;
-			if (s[nbr] < s[bike]) {
-				newBike = nbr;
-			}
-			
-			// if OLD dist of nbr on newbike is less than dist of current city
-			// on current bike + cost of reaching the cur city on cur bike
-			if (dist[nbr][newBike] < dist[city][bike] + cost*s[bike]) {
-				dist[nbr][newBike] = dist[city][bike] + cost*s[bike];
-				pq.push({dist[nbr][newBike], nbr, newBike});
-			}
+void solve() {
+	ll n;
+	cin >> n;
+	string s;
+	cin >> s;
+	ll count = 0;
+	for (char c: s) {
+		if (c == '+') {
+			count++;
+		} else {
+			count--;
 		}
 	}
-	cout << -1 << enl;
+	cout << abs(count) << enl;
 }
- 
+
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -106,20 +69,6 @@ int main() {
     int t;
     cin >> t;
     while (t --> 0) {
-    	ll n, m;
-    	cin >> n >> m;
-    	vector<vector<pll>> adj(n);
-    	for (int i = 0; i < m; i++) {
-    		ll u, v, w;
-    		cin >> u >> v >> w;
-    		adj[u-1].push_back({w, v-1}); // {cost and n}
-    		adj[v-1].push_back({w, u-1});
-		}
-		vector<ll> s(n);
-		for (int i = 0; i < n; i++) {
-			cin >> s[i];
-		}
-		solve(adj, s, n);
-		
+    	solve();
 	}
 }
