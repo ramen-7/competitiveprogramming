@@ -4,12 +4,6 @@ using namespace std;
 /* clang-format off */
 
 /* TYPES  */
-#define F first
-#define S second
-#define vec vector
-#define pb push_back
-#define pdd pair<ld, ld>
-#define all(m) m.begin(), m.end()
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<long long, long long>
@@ -18,8 +12,6 @@ using namespace std;
 #define mii map<int, int>
 #define si set<int>
 #define sc set<char>
-#define usi unordered_set<int>
-#define usll unordered_set<long long>
 
 /* FUNCTIONS */
 #define f(i,s,e) for(long long int i=s;i<e;i++)
@@ -47,85 +39,73 @@ void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << "
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
 void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
-const char enl = '\n';
-ll INF = 1e16;
+const char enl= '\n';
 /*  All Required define Pre-Processors and typedef Constants */
 typedef long int int32;
 typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-typedef array<ll, 3> P;
 
 void solve() {
-	ll n, m;
+	priority_queue<pll> pq;
+	ll n, m; 
 	cin >> n >> m;
-	vector<vector<pll>> adj(n);
-	for (int i = 0; i < m; i++) {
-		ll u, v, w;
-		cin >> u >> v >> w;
-		--u;
-		--v;
-		adj[u].push_back({v, w});
-		adj[v].push_back({u, w});
-	}
-	vector<ll> s(n);
+	vector<string> arr(n);
 	for (int i = 0; i < n; i++) {
-		cin >> s[i];
+		cin >> arr[i];
+		ll size = arr[i].size();
+		ll count = 0;
+		for (int j = size-1; j >= 0; j--) {
+			if (arr[i][j] == '0') {
+				count++;
+			} else {
+				pq.push({count, arr[i].size()});
+				break;
+			}
+		}
 	}
-	
-	vector<vector<ll>> dist(n, vector<ll>(n, INF));
-	vector<vector<bool>> visited(n, vector<bool>(n, false));
-
-	
-	
-//	ans[0] = 0;
-	dist[0][0] = 0;
-//	visited[0][0] = true;
-	
-	priority_queue<P, vector<P>, greater<P>> pq;
-	pq.push({0, 0, 0}); // cost , node, bike idx
-	
-	while (!pq.empty()) {
-		P cur = pq.top();
+	ll turn = 0;
+	if (pq.size() == 1) {
+		pll cur = pq.top();
 		pq.pop();
-		
-		ll cur_city = cur[1];
-		ll cur_cost = cur[0];
-		ll cur_bike = cur[2];
-		
-//		cout << "cur city = " << cur_city << ", cur cost = " << cur_cost << ", cur bike = " << cur_bike << enl;
-		
-		if (cur_city == n-1) {
-			cout << dist[cur_city][cur_bike] << enl;
-			return;
-		}
-		
-		if (visited[cur_city][cur_bike]) {
-			continue;
-		}
-		visited[cur_city][cur_bike] = true;
-		
-		for (auto [nbr, nbr_cost]: adj[cur_city]) {
-//			ll nbr = n.first;
-//			ll nbr_cost = n.second;
-			ll new_bike = cur_bike;
-			
-			if (s[cur_bike] > s[nbr]) {
-				new_bike = nbr;
-			}
-			
-			// if dist to reach nbr on new_bike (which could be the old one)
-			// is more than dist to reach cur city on cur bike + cost to reach nbr on cur_bike
-			if (dist[nbr][new_bike] > dist[cur_city][cur_bike] + s[new_bike]*nbr_cost) {
-				dist[nbr][new_bike] = dist[cur_city][cur_bike] + s[new_bike]*nbr_cost;
-				pq.push({dist[nbr][new_bike], nbr, new_bike});
-			}
-		}	
+		ll cur_zeros = cur.first;
+		ll cur_size = cur.second;
+		cur_size -= cur_zeros;
+		pq.push({0, cur_size});
 	}
-	cout << -1 << enl;
+	while (pq.size() > 1) {
+		pll cur = pq.top();
+		pq.pop();
+		ll cur_zeros = cur.first;
+		ll cur_size = cur.second;
+		// anna
+		if (turn % 2 == 0) {
+			cur_size -= cur_zeros;
+			pq.push({0, cur_size});
+		} else {
+			pll second = pq.top();
+			pq.pop();
+			ll second_zeros = second.first;
+			ll second_size = second.second;
+			if (second_zeros > cur_zeros) {
+				pq.push({cur_zeros, second_size+cur_size});
+			} else {
+				pq.push({second_zeros, second_size+cur_size});
+			}
+		}
+		turn++;
+	}
+	pll ans = pq.top();
+	ll size = ans.second;
+//	cout << size << "\n";
+	if (size > m) {
+		cout << "Sasha" << "\n";
+	} else {
+		cout << "Anna" << "\n";
+	}
 }
- 
+
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
@@ -134,5 +114,6 @@ int main() {
     cin >> t;
     while (t --> 0) {
     	solve();
-	}
+    }
 }
+
