@@ -72,40 +72,32 @@ struct compare {
 };
 
 void solve() {
-	ll n;
-	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n];
-	ll count0[n];
-	
-	ll c1 = 0, c0 = 0;
-	for (int i = 0; i < n; i++) {
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		if (s[i] == '0') {
-			c0++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
+	ll k, q;
+	cin >> k >> q;
+	vector<ll> arr(k);
+	for (int i = 0; i < k; i++) {
+		cin >> arr[i];
 	}
-	
-	ll ansVal = n;
-	ll ans = -1;
-	for (int i = n-1; i >= 0; i--) {
-		ll round0 = (ll)ceil((i)/2.0);
-		ll round1 = (ll)ceil((n-i)/2.0);
-//		cout << round0 << ": to the left = " << count0[i] << ", " << round1 << ":, to the right = " << count1[i] << endl; 
-		if (count1[i] >= round1 && count0[i] >= round0) {
-			ll curVal = abs((n/2) - i);
-			if (curVal < ansVal) {
-				ansVal = curVal;
-				ans = (i+1);
+	vector<ll> queries(q);
+	for (int i = 0; i < q; i++) {
+		cin >> queries[i];
+	}
+	for (int i = 0; i < q; i++) {
+		ll curQ	= queries[i];
+		ll minVal = LLONG_MAX;
+		for (int i = 0; i < k; i++) {
+			if (arr[i] <= curQ) {
+				minVal = arr[i];
+				break;
 			}
 		}
-	}	
-	cout << ans << "\n";
+		if (minVal == LLONG_MAX) {
+			cout << curQ << " ";
+		} else {
+			cout << minVal-1 << " ";
+		}
+	}
+	cout << "\n";
 }
 
 
