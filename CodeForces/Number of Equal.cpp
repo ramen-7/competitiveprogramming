@@ -49,7 +49,8 @@ ll gcd(ll a,ll b) { if (b==0) return a; return gcd(b, a%b); }
 ll lcm(ll a,ll b) { return a/gcd(a,b)*b; }
 string to_upper(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='a' && a[i]<='z') a[i]-='a'-'A'; return a; }
 string to_lower(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='A' && a[i]<='Z') a[i]+='a'-'A'; return a; }
-void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
+void print_arr(ll a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
+void print_vector(vector<ll>& a, int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
 void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
@@ -73,45 +74,26 @@ struct compare {
 
 
 void solve() {
-	ll n;
-	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
+	ll n, m;
+	cin >> n >> m;
+	unordered_map<ll, ll> freqA, freqB;
+	vector<ll> a(n), b(m);
 	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
-		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
-	ll ans = -1;
-	
-	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
-		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
+		cin >> a[i];
+		freqA[a[i]]++;
+	}
+	for (int i = 0; i < m; i++) {
+		cin >> b[i];
+		freqB[b[i]]++;
+	}
+	ll ans = 0;
+	for (auto entry: freqA) {
+		ll key = entry.first;
+		ll val = entry.second;
+		if (freqB.find(key) != freqB.end()) {
+			ans += freqB[key]*val;
 		}
 	}
-	
 	cout << ans << "\n";
 }
 
@@ -121,10 +103,6 @@ int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    solve();
 }
 

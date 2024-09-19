@@ -49,7 +49,8 @@ ll gcd(ll a,ll b) { if (b==0) return a; return gcd(b, a%b); }
 ll lcm(ll a,ll b) { return a/gcd(a,b)*b; }
 string to_upper(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='a' && a[i]<='z') a[i]-='a'-'A'; return a; }
 string to_lower(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='A' && a[i]<='Z') a[i]+='a'-'A'; return a; }
-void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
+void print_arr(ll a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
+void print_vector(vector<ll>& a, int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
 void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
@@ -75,44 +76,36 @@ struct compare {
 void solve() {
 	ll n;
 	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
-	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
-		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
-	ll ans = -1;
+	vector<ll> arr(n-1);
+	for (int i = 0; i < n-1; i++) {
+		cin >> arr[i];
+	}
+	vector<ll> ans(n, -1);
 	
+	ans[0] = 501;
 	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
-		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
+	for (int i = 0; i < n-1; i++) {
+		if ((ans[i] + arr[i])%ans[i] == 0) {
+			ll curVal = ans[i];
+			while ((curVal % ans[i]) != arr[i]) {
+//				cout << ans[i] << ", " << curVal << ", " << curVal%ans[i] << endl;
+				++curVal;	
+			}
+			ans[i+1] = curVal;
+		} else {
+			ans[i+1] = ans[i] + arr[i];
 		}
 	}
 	
-	cout << ans << "\n";
+	for (int i = 0; i < n; i++) {
+		cout << ans[i] << " ";
+	}
+	cout << "\n";
+//	for (int i = 0; i < n-1; i++) {
+//		cout << ans[i+1]%ans[i] << " ";
+//	}
+//	cout << "\n";
+//	cout << "__________\n";
 }
 
 
@@ -123,8 +116,9 @@ int main() {
     cout.tie(0);
     int t;
     cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    while (t-->0) {
+    	solve();	
+	}
+    
 }
 

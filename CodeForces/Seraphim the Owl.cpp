@@ -71,48 +71,50 @@ struct compare {
 	}
 };
 
+ll getFinal(vector<ll> a, vector<ll> b, ll idx) {
+//	cout << idx << endl;
+	if (idx == 0) {
+		return a[0];
+	}
+	ll take_a = a[idx];
+	ll take_b = b[idx] + getFinal(a, b, idx-1);
+	return min(take_a, take_b);
+}
 
 void solve() {
-	ll n;
-	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
+	ll n, m;
+	cin >> n >> m;
+	vector<ll> a(n), b(n);
 	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
+		cin >> a[i];
+	}
+	for (int i = 0; i < n; i++) {
+		cin >> b[i];
+	}
+
+	ll ans = 0;
+	bool check = false;
+	for (int i = n-1; i > m-1; i--) {
+		if (a[i] == b[i]) {
+			ans += a[i];
+			check = false;
+		} else if (b[i] < a[i]) {
+			ans += b[i];
+			check = true;
+		} else {
+			ans += a[i];
+			check = false;
 		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
-	ll ans = -1;
-	
-	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
-		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
-		}
+//		cout << "x" << endl;
+	}
+	if (m == 1) {
+		ans += a[0];
+		cout << ans << "\n";
+		return;
 	}
 	
-	cout << ans << "\n";
+	ll add = getFinal(a, b, m-1);
+	cout << ans + add << "\n";
 }
 
 

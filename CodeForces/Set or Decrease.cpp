@@ -71,47 +71,51 @@ struct compare {
 	}
 };
 
-
-void solve() {
-	ll n;
-	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
-	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
-		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
-	ll ans = -1;
-	
-	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
-		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
+bool ok(ll ops, ll k, ll sum, ll n, vector<ll>& arr) {
+	if (sum - ops <= k) {
+		return true;
+	}
+//	cout << "ops = " << ops << endl;
+//	cout << "------" << endl;
+	for (ll i = n-1; i >= max(1, n-ops); i--) {
+		sum -= arr[i];
+//		cout << "sum = " << sum << endl;
+		ll opsLeft = ops-(n-i);
+//		cout << "operations Left = " << opsLeft << endl;
+//		cout << "add = " << (n - i + 1) << " * " << (arr[0] - opsLeft) << " = " << (n - i + 1) * (arr[0] - opsLeft) << endl;
+		ll tempSum = sum - arr[0] + (n - i + 1) * (arr[0] - opsLeft);
+//		cout << tempSum << endl;
+		if (tempSum <= k) {
+			return true;
 		}
 	}
 	
+	return false;
+}
+
+void solve() {
+	ll n, k;
+	cin >> n >> k;
+	vector<ll> arr(n);
+	
+	ll sum = 0;
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+		sum += arr[i];
+	}
+	sort(arr.begin(), arr.end());
+	ll l = 0, r = 1e17;
+	ll ans = -1;
+	while (l <= r) {
+		ll mid = l + (r - l)/2;
+		
+		if (ok(mid, k, sum, n, arr)) {
+			ans = mid;
+			r = mid-1;
+		} else {
+			l = mid+1;
+		}
+	}
 	cout << ans << "\n";
 }
 
@@ -123,8 +127,9 @@ int main() {
     cout.tie(0);
     int t;
     cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    while (t-->0) {
+    	solve();	
+	}
+    
 }
 

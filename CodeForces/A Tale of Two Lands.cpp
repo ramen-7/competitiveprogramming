@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-
+ 
 /* clang-format off */
 struct custom_hash {
     static uint64_t splitmix64(uint64_t x) {
@@ -10,13 +10,13 @@ struct custom_hash {
         x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
         return x ^ (x >> 31);
     }
-
+ 
     size_t operator()(uint64_t x) const {
         static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
         return splitmix64(x + FIXED_RANDOM);
     }
 };
-
+ 
 /* TYPES  */
 #define ll long long
 #define pii pair<int, int>
@@ -26,18 +26,18 @@ struct custom_hash {
 #define mii map<int, int>
 #define si set<int>
 #define sc set<char>
-
+ 
 /* FUNCTIONS */
 #define f(i,s,e) for(long long int i=s;i<e;i++)
 #define cf(i,s,e) for(long long int i=s;i<=e;i++)
 #define rf(i,e,s) for(long long int i=e-1;i>=s;i--)
 #define pb push_back
 #define eb emplace_back
-
+ 
 /* PRINTS */
 template <class T>
 void print_v(vector<T> &v) { cout << "{"; for (auto x : v) cout << x << ","; cout << "\b}"; }
-
+ 
 /* UTILS */
 //#define PI 3.1415926535897932384626433832795
 #define read(type) readInt<type>()
@@ -59,7 +59,7 @@ typedef long int int32;
 typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
-
+ 
 struct compare {
 	bool operator()(const pair<ll, ll>& a, const pair<ll, ll>& b) {
 		if (a.first == b.first) {
@@ -67,64 +67,52 @@ struct compare {
 			return a.second > b.second;
 		}
 		// descending
+		
 		return a.first < b.first;
 	}
 };
 
+bool isPossible(vector<ll>& arr, ll mid, ll n) {
+	ll count = 0;
+	for (int i = 0; i < n; i++) {
+		auto itr = upper_bound(arr.begin(), arr.end(), arr[i]*2);
+		int idx = (itr == arr.end()) ? n-1: itr-arr.begin()-1;
+		count += (idx - i);
+		if (count >= mid) {
+			return true;
+		}
+	}
+	return count >= mid;
+	
+}
 
 void solve() {
 	ll n;
 	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
+	vector<ll> arr(n);
 	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
-		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
+		cin >> arr[i];
+		arr[i] = abs(arr[i]);
+	}
+	sort(arr.begin(), arr.end());
+	ll l = 0, r = 1e18;
 	ll ans = -1;
-	
-	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
-		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
+	while (l <= r) {
+		ll mid = l + (r-l)/2;
+		if (isPossible(arr, mid, n)) {
+			ans = mid;
+			l = mid+1;
+		} else {
+			r = mid-1;
 		}
 	}
-	
 	cout << ans << "\n";
 }
-
-
-
+ 
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    solve();
+   	
 }
-

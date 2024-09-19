@@ -74,47 +74,98 @@ struct compare {
 
 void solve() {
 	ll n;
-	cin >> n;
 	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
+	cin >> n >> s;
+	vector<ll> ys, yn, xe, xw;
+	ll turn = 0;
 	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
-		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
-	ll ans = -1;
-	
-	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
-		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
+		if (s[i] == 'N') {
+			yn.pb(i);
+		} else if (s[i] == 'S') {
+			ys.pb(i);
+		} else if (s[i] == 'E') {
+			xe.pb(i);
+		} else if (s[i] == 'W') {
+			xw.pb(i);
 		}
 	}
-	
-	cout << ans << "\n";
+	if ((yn.size() + ys.size()) % 2 == 1 || (xw.size() + xe.size()) % 2 == 1) {
+		no();
+		return;
+	}
+	if (n == 2 && (yn.size() == 1 || ys.size() == 1 || xe.size() == 1 || xw.size() == 1)) {
+		no();
+		return;
+	}
+	vector<char> ans(n);
+	ll idx = 0;
+	while (idx < yn.size() && idx < ys.size()) {
+		if (turn % 2 == 0) {
+			ans[yn[idx]] = 'R';
+			ans[ys[idx]] = 'R';
+			idx++;	
+		} else {
+			ans[yn[idx]] = 'H';
+			ans[ys[idx]] = 'H';
+			idx++;	
+		}
+		turn++;
+	}
+	turn = 0;
+	while (idx < yn.size()) {
+		if (turn % 2 == 0) {
+			ans[yn[idx++]] = 'R';
+		} else {
+			ans[yn[idx++]] = 'H';
+		}
+		turn++;
+	}
+	turn = 0;
+	while (idx < ys.size()) {
+		if (turn % 2 == 0) {
+			ans[ys[idx++]] = 'R';
+		} else {
+			ans[ys[idx++]] = 'H';
+		}
+		turn++;
+	}
+	idx = 0;
+	turn = 1;
+	while (idx < xe.size() && idx < xw.size()) {
+		if (turn % 2 == 0) {
+			ans[xe[idx]] = 'R';
+			ans[xw[idx]] = 'R';
+			idx++;	
+		} else {
+			ans[xe[idx]] = 'H';
+			ans[xw[idx]] = 'H';
+			idx++;	
+		}
+		turn++;
+	}
+	turn = 0;
+	while (idx < xe.size()) {
+		if (turn % 2 == 0) {
+			ans[xe[idx++]] = 'R';
+		} else {
+			ans[xe[idx++]] = 'H';
+		}
+		turn++;
+	}
+	turn = 0;
+	while (idx < xw.size()) {
+		if (turn % 2 == 0) {
+			ans[xw[idx++]] = 'R';
+		} else {
+			ans[xw[idx++]] = 'H';
+		}
+		turn++;
+	}
+	for (char c: ans) {
+		cout << c;
+	}
+	cout << "\n";
 }
-
 
 
 int main() {
@@ -123,8 +174,9 @@ int main() {
     cout.tie(0);
     int t;
     cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    while (t-->0) {
+    	solve();	
+	}
+    
 }
 

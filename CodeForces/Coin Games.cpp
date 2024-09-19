@@ -73,45 +73,28 @@ struct compare {
 
 
 void solve() {
-	ll n;
-	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
-	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
+	ll x, y;
+	cin >> x >> y;
+	if (x == 0 && y == 0) {
+		cout << 0 << "\n";
+		return;
+	}
+	ll ansY = ceil(y/2.0);
+	ll spaceLeft = 15*ansY - y*4;
+//	cout << "spaceLeft = " << spaceLeft << endl;
+//	cout << ansY << endl;
+	ll ans = ansY;
+	if (spaceLeft >= x) {
+		ans = ansY;
+		if (ans == 0) {
+			ans++;
 		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
-	ll ans = -1;
-	
-	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
-		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
+	} else {
+		while (x > 0) {
+			x -= 15;
+			ans++;
 		}
 	}
-	
 	cout << ans << "\n";
 }
 
@@ -123,8 +106,9 @@ int main() {
     cout.tie(0);
     int t;
     cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    while (t-->0) {
+    	solve();	
+	}
+    
 }
 

@@ -76,82 +76,34 @@ struct compare {
 void solve() {
 	ll n, k;
 	cin >> n >> k;
-	vector<ll> arr(n);
+	deque<ll> dq(n);
 	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
+		cin >> dq[i];
 	}
-	ll count = 0;
+	ll ans = 0;
 	ll i = 0, j = n-1;
-	ll turn = 0;
-	while (i <= j && k > 0) {
-		ll attack = min(arr[i], arr[j]);
-		ll minHp = min(attack, k);
-		
-		if (turn % 2 == 0) {
-			arr[i] -= minHp;
-			k -= minHp;
-			if (arr[i] == 0) {
-				i++;
-				count++;
-			}
-			
-			turn += minHp;
-			
-			if (i > j) {
-				break;
-			}
-			if (k >= minHp) {
-				k -= minHp;	
-				arr[j] -= minHp;
-			}
-			
-			if (arr[j] == 0) {
-	//			cout << j << " back gone" << endl;
-				j--;
-				count++;
-			}
-			turn += minHp;
-//			
-//			if (minHp % 2 == 0) {
-//				turn = 0;
-//			} else {
-//				turn = 1;
-//			}
-//		cout << "k = " << k << endl;	
+	while (dq.size() > 1 && k > 0) {
+		ll mn = min(dq.front(), dq.back());
+		if (k < 2*mn) {
+			dq.front() -= k/2 + k%2;
+			dq.back () -= k/2;
+			k = 0;
 		} else {
-			
-			arr[j] -= minHp;
-			k -= minHp;
-			if (arr[j] == 0) {
-				j--;
-				count++;
-			}
-			
-			turn += minHp;
-			
-			if (i > j) {
-				break;
-			}
-			if (k >= minHp) {
-				k -= minHp;	
-				arr[i] -= minHp;
-			}
-			
-			if (arr[i] == 0) {
-	//			cout << j << " back gone" << endl;
-				i++;
-				count++;
-			}
-			turn += minHp;
-//			
-//			if (minHp % 2 == 0) {
-//				turn = 0;
-//			} else {
-//				turn = 1;
-//			}
+			dq.front() -= mn;
+			dq.back() -= mn;
+			k -= 2*mn;
+		}
+		if (dq.front() == 0) {
+			dq.pop_front();
+			ans++;
+		}
+		if (dq.back() == 0) {
+			dq.pop_back();
+			ans++;
 		}
 	}
-	cout << count << "\n";
+//	ans = n - dq.size();
+	cout << ans + (dq.size() && dq.front() <= k) << "\n";
 }
  
 int main() {
