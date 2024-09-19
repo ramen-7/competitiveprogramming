@@ -73,46 +73,56 @@ struct compare {
 
 
 void solve() {
+	ll a, b, c;
+	cin >> a >> b >> c;
 	ll n;
 	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
+	vector<ll> usb, ps2;
 	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
-		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
-	ll ans = -1;
-	
-	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
-		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
+		ll val;
+		string inp;
+		cin >> val >> inp;
+		if (inp == "USB") {
+			usb.pb(val);
+		} else {
+			ps2.pb(val);
 		}
 	}
-	
-	cout << ans << "\n";
+	sort(usb.begin(), usb.end());
+	sort(ps2.begin(), ps2.end());
+	ll i = 0;
+	ll ans = 0;
+	ll count = 0;
+	while (i < usb.size() && a > 0) {
+		ans += usb[i++];
+		count++;
+		a--;
+//		cout << "usb" << endl;
+	}
+	ll j = 0;
+	while (j < ps2.size() && b > 0) {
+		ans += ps2[j++];
+		count++;
+		b--;
+//		cout << "ps2" << endl;
+	}
+	vector<ll> rem;
+	while (i < usb.size()) {
+		rem.pb(usb[i++]);
+	}
+	while (j < ps2.size()) {
+		rem.pb(ps2[j++]);
+	}
+	sort(rem.begin(), rem.end());
+	ll idx = 0;
+	while (idx < rem.size() && c > 0) {
+		ans += rem[idx++];
+		count++;
+		
+		c--;
+//		cout << "both" << endl;
+	}
+	cout << count << " " << ans << "\n";
 }
 
 
@@ -121,10 +131,6 @@ int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
-    cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    solve();
 }
 

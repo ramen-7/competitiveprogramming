@@ -75,47 +75,31 @@ struct compare {
 void solve() {
 	ll n;
 	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
-	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
-		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
+	ll l = 1, r = n;
 	ll ans = -1;
-	
-	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
+	while (l <= r) {
+		ll mid = l + (r-l)/2;
+		cout << "? " << l << " " << mid << endl;
+		ll size = mid-l+1;
+		vector<ll> inp(size);
+		for (int i = 0; i < size; i++) {
+			cin >> inp[i];
+		}		
+		ll count = 0;
+		for (int num: inp) {
+			if (num >= l && num <= mid) {
+				count++;
+			}
 		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
+		if (count % 2 == 1) {
+			ans = mid;
+			r = mid-1;
+		} else {
+			l = mid+1;
 		}
 	}
-	
-	cout << ans << "\n";
+	cout << "! " << ans << endl;
 }
-
-
 
 int main() {
 	ios_base::sync_with_stdio(0);
@@ -123,8 +107,9 @@ int main() {
     cout.tie(0);
     int t;
     cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    while (t-->0) {
+    	solve();	
+	}
+    
 }
 

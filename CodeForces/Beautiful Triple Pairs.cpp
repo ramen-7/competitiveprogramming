@@ -75,43 +75,32 @@ struct compare {
 void solve() {
 	ll n;
 	cin >> n;
-	string s;
-	cin >> s;
-	ll count1[n+1];
-	ll count0[n+1];
-	count1[n] = 0;
-	ll c1 = 0, c0 = 0;
+	vector<ll> arr(n);
 	for (int i = 0; i < n; i++) {
-		if (s[i] == '0') {
-			c0++;
-		}
-		if (s[n-i-1] == '1') {
-			c1++;
-		}
-		count0[i] = c0;
-		count1[n-i-1] = c1;
-	}	
-	count0[n] = c0;
-	ll minVal = n*2;
-	ll ans = -1;
-	
-	
-	ll zeroCount = 0;
-	for (int i = 0; i <= n; i++) {
-		ll reqZero = (i+1)/2;
-		ll reqOnes = (n-i+1)/2;
-		ll curVal = abs(n-2*i);
-		
-		if (zeroCount >= (i+1)/2 && count1[i] >= (n-i+1)/2 && minVal > abs(n-2*i)) {
-			minVal = curVal;
-			ans = i;
-		}
-		
-		if (i != n) {
-			zeroCount += (s[i] == '0');
-		}
+		cin >> arr[i];
 	}
-	
+	ll ans = 0;
+	unordered_map<string, ll> hmap;
+	for (int i = 0; i < n-2; i++) {
+		string triplet = to_string(arr[i]) + "," + to_string(arr[i+1]) + "," + to_string(arr[i+2]);
+		vector<string> arrTrip(3);
+		arrTrip[0] = to_string(arr[i]) + "a" + to_string(arr[i+1]) + "b";
+		arrTrip[1] = to_string(arr[i]) + "a" + to_string(arr[i+2]) + "c";
+		arrTrip[2] = to_string(arr[i+1]) + "b" + to_string(arr[i+2]) + "c";
+//		cout << triplet << ": " << arrTrip[0] << ", " << arrTrip[1] << ", " << arrTrip[2] << endl;
+		for (string tri: arrTrip) {
+			if (hmap.find(tri) != hmap.end()) {
+//				cout << "found " << tri << ": " << hmap[tri] << endl;
+				ans += hmap[tri];
+				
+			}
+			hmap[tri]++;
+			if (hmap.find(triplet) != hmap.end()) {
+				ans -= hmap[triplet];
+			}
+		}
+		hmap[triplet]++;
+	}
 	cout << ans << "\n";
 }
 
@@ -123,8 +112,9 @@ int main() {
     cout.tie(0);
     int t;
     cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    while (t-->0) {
+    	solve();	
+	}
+    
 }
 
