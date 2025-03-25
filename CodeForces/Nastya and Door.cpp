@@ -55,82 +55,59 @@ struct compare {
 	}
 };
 
-bool isPossible(ll lim, vector<ll>& arr, ll n, ll x, ll a, ll y, ll b, ll k, ll LCM) {
-	ll total = 0;
-	ll idx = n-1;
-	ll big, small, bigP, smallP;
-	if (x > y) {
-		big = x;
-		bigP = a;
-		small = y;
-		smallP = b;
-	} else {
-		big = y;
-		bigP = b;
-		small = x;
-		smallP = a;
-	}
-	
-	ll countLCM = lim/LCM;
-	ll countBig = (lim/bigP) - countLCM;
-	ll countSmall = (lim/smallP) - countLCM;
-	
-//	cout << countLCM << endl;
-	
-	while (idx >= 0 && countLCM > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (x+y);
-		countLCM--;
-		lim--;
-	}
-	
-//	cout << "afterLCM = " << total << endl;
-	
-	while (idx >= 0 && countBig > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (big);
-		countBig--;
-		lim--;
-	}
-	
-//	cout << "afterBig = " << total << endl;
-	
-	while (idx >= 0 && countSmall > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (small);
-		countSmall--;
-		lim--;
-	}
-	
-//	cout << "afterSmall = " << total << endl;
-	
-	return total >= k;
+void printMap(unordered_map<ll, ll>& mp) {
+	unordered_map<ll, ll>::iterator it = mp.begin();
+
+    // Iterate through the map and print the elements
+    while (it != mp.end()) {
+        cout << "Key: " << it->first
+             << ", Value: " << it->second << endl;
+        ++it;
+    }
+    cout << "----" << endl;
 }
 
 void solve() {
-	ll n, s;
-	cin >> n >> s;
-	vector<ll> arr(n);
-	for (int i = 0; i < n; i++) {
+	ll n, k, d;
+	cin >> n >> k;
+	vector<ll> arr(n+1);
+	for (int i = 1; i <= n; i++) {
 		cin >> arr[i];
 	}
-	ll sum = 0;
-	int i = 0;
-	ll ans = n;
-	for (int j = 0; j < n; j++) {
-		sum += arr[j];
-		while (sum >= s) {
-			ans = min(ans, j-i+1);
-			sum -= arr[i++];
+	vector<ll> peaks;
+	for (int i = 1; i <= n-2; i++) {
+		if (arr[i] < arr[i+1] && arr[i+1] > arr[i+2]) {
+			peaks.pb(i+1);
 		}
 	}
-	cout << ans << "\n";
+	ll ans = 1;
+	ll maxPeaks = 0;
+	for (ll l = 1; l <= n-k+1; l++) {
+		ll r = l+k-1;
+//		cout << "l = " << l << ", r = " << r << endl;
+		ll lb = lower_bound(peaks.begin(), peaks.end(), l+1) - peaks.begin();
+		ll ub = upper_bound(peaks.begin(), peaks.end(), r-1) - peaks.begin() - 1;
+//		cout << lb << ", " << ub << endl;
+		ll noOfPeaks = (ub-lb+1);
+		if (noOfPeaks > maxPeaks) {
+			ans = l;
+			maxPeaks = noOfPeaks;
+		}
+	}
+	
+	cout << maxPeaks+1 << " " <<  ans << "\n";
 }
-
 
 
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    	solve();	
+	ll t;
+	cin >> t;
+	while (t --> 0) {
+		solve();
+	}
 	
 }
 

@@ -55,73 +55,43 @@ struct compare {
 	}
 };
 
-bool isPossible(ll lim, vector<ll>& arr, ll n, ll x, ll a, ll y, ll b, ll k, ll LCM) {
-	ll total = 0;
-	ll idx = n-1;
-	ll big, small, bigP, smallP;
-	if (x > y) {
-		big = x;
-		bigP = a;
-		small = y;
-		smallP = b;
-	} else {
-		big = y;
-		bigP = b;
-		small = x;
-		smallP = a;
-	}
-	
-	ll countLCM = lim/LCM;
-	ll countBig = (lim/bigP) - countLCM;
-	ll countSmall = (lim/smallP) - countLCM;
-	
-//	cout << countLCM << endl;
-	
-	while (idx >= 0 && countLCM > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (x+y);
-		countLCM--;
-		lim--;
-	}
-	
-//	cout << "afterLCM = " << total << endl;
-	
-	while (idx >= 0 && countBig > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (big);
-		countBig--;
-		lim--;
-	}
-	
-//	cout << "afterBig = " << total << endl;
-	
-	while (idx >= 0 && countSmall > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (small);
-		countSmall--;
-		lim--;
-	}
-	
-//	cout << "afterSmall = " << total << endl;
-	
-	return total >= k;
-}
 
 void solve() {
-	ll n, s;
-	cin >> n >> s;
-	vector<ll> arr(n);
+	ll n;
+	cin >> n;
+	vector<ll> a(n), b(n);
 	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
+		cin >> a[i];
 	}
-	ll sum = 0;
-	int i = 0;
-	ll ans = n;
-	for (int j = 0; j < n; j++) {
-		sum += arr[j];
-		while (sum >= s) {
-			ans = min(ans, j-i+1);
-			sum -= arr[i++];
+	ll diffIdx = 0;
+	ll sumDiff = 0;
+	ll diff = 0;
+	ll changeIdx = -1;
+	for (int i = 0; i < n; i++) {
+		cin >> b[i];
+		if (a[i] < b[i]) {
+			diffIdx++;
+			diff += (b[i]-a[i]);
+			changeIdx = i;
+		} else {
+			sumDiff += (a[i] - b[i]);	
 		}
 	}
-	cout << ans << "\n";
+	if (diffIdx > 1) {
+		no();
+		return;
+	}
+//	cout << "diff =" << diff << endl;
+	for (int i = 0; i < n; i++) {
+		a[i] -= diff;
+		if (a[i] < b[i] && i != changeIdx) {
+			no();
+			return;
+		}
+	}
+	if (sumDiff >= (n-1)*diff) {
+		yes();
+	}
 }
 
 
@@ -130,8 +100,11 @@ int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
+    ll t;
+    cin >> t;
+    while (t --> 0) {
     	solve();	
-	
+	}
 }
 
 

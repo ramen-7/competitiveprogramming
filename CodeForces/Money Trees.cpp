@@ -55,82 +55,71 @@ struct compare {
 	}
 };
 
-bool isPossible(ll lim, vector<ll>& arr, ll n, ll x, ll a, ll y, ll b, ll k, ll LCM) {
-	ll total = 0;
-	ll idx = n-1;
-	ll big, small, bigP, smallP;
-	if (x > y) {
-		big = x;
-		bigP = a;
-		small = y;
-		smallP = b;
-	} else {
-		big = y;
-		bigP = b;
-		small = x;
-		smallP = a;
-	}
-	
-	ll countLCM = lim/LCM;
-	ll countBig = (lim/bigP) - countLCM;
-	ll countSmall = (lim/smallP) - countLCM;
-	
-//	cout << countLCM << endl;
-	
-	while (idx >= 0 && countLCM > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (x+y);
-		countLCM--;
-		lim--;
-	}
-	
-//	cout << "afterLCM = " << total << endl;
-	
-	while (idx >= 0 && countBig > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (big);
-		countBig--;
-		lim--;
-	}
-	
-//	cout << "afterBig = " << total << endl;
-	
-	while (idx >= 0 && countSmall > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (small);
-		countSmall--;
-		lim--;
-	}
-	
-//	cout << "afterSmall = " << total << endl;
-	
-	return total >= k;
-}
 
 void solve() {
-	ll n, s;
-	cin >> n >> s;
-	vector<ll> arr(n);
+	ll n, k;
+	cin >> n >> k;
+	vector<ll> arr(n), h(n);
+	ll mini = LLONG_MAX;
+	
 	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
+		mini = min(mini, arr[i]);
 	}
-	ll sum = 0;
+	for (int i = 0; i < n; i++) {
+		cin >> h[i];
+	}
+
+	ll ans = 1;
 	int i = 0;
-	ll ans = n;
-	for (int j = 0; j < n; j++) {
-		sum += arr[j];
-		while (sum >= s) {
-			ans = min(ans, j-i+1);
-			sum -= arr[i++];
+	ll sum = 0;
+	
+	if (mini > k) {
+		cout << 0 << "\n";
+		return;
+	}
+	
+	vector<int> possible(n, 0);
+	
+	for (int i = 0; i < n-1; i++) {
+		possible[i] = ((h[i] % h[i+1]) == 0);
+	}
+	
+	for (int j = 0; j < n-1; j++) {
+		if (possible[j] == 0) {
+			sum = 0;
+			i = j+1;
+//			cout << "not possible so sum = " << sum << ", i = " << i << ", j = " << j << endl;
+		} else {
+			sum += arr[j];
+			
+			while (sum > k) {
+				sum -= arr[i++];
+			}
+//			cout << "sum = " << sum << ", i = " << i << ", j = " << j << endl;
+			if (sum + arr[j+1] <= k) {
+//				cout << "yay" << endl;
+				ans = max(ans, j-i+2);
+			} else {
+//				cout << "boo" << endl;
+				ans = max(ans, j-i+1);
+			}
 		}
 	}
+	
 	cout << ans << "\n";
 }
-
 
 
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    	solve();	
+	ll t;
+	cin >> t;
+	while (t --> 0) {
+		solve();
+	}
 	
 }
 

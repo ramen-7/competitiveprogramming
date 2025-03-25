@@ -35,8 +35,8 @@ string to_upper(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='a' && a
 string to_lower(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='A' && a[i]<='Z') a[i]+='a'-'A'; return a; }
 void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
-void yes() { cout<<"YES\n"; }
-void no() { cout<<"NO\n"; }
+void yes() { cout<<"Yes\n"; }
+void no() { cout<<"No\n"; }
 const char enl= '\n';
 /*  All Required define Pre-Processors and typedef Constants */
 typedef long int int32;
@@ -55,82 +55,47 @@ struct compare {
 	}
 };
 
-bool isPossible(ll lim, vector<ll>& arr, ll n, ll x, ll a, ll y, ll b, ll k, ll LCM) {
-	ll total = 0;
-	ll idx = n-1;
-	ll big, small, bigP, smallP;
-	if (x > y) {
-		big = x;
-		bigP = a;
-		small = y;
-		smallP = b;
-	} else {
-		big = y;
-		bigP = b;
-		small = x;
-		smallP = a;
-	}
-	
-	ll countLCM = lim/LCM;
-	ll countBig = (lim/bigP) - countLCM;
-	ll countSmall = (lim/smallP) - countLCM;
-	
-//	cout << countLCM << endl;
-	
-	while (idx >= 0 && countLCM > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (x+y);
-		countLCM--;
-		lim--;
-	}
-	
-//	cout << "afterLCM = " << total << endl;
-	
-	while (idx >= 0 && countBig > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (big);
-		countBig--;
-		lim--;
-	}
-	
-//	cout << "afterBig = " << total << endl;
-	
-	while (idx >= 0 && countSmall > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (small);
-		countSmall--;
-		lim--;
-	}
-	
-//	cout << "afterSmall = " << total << endl;
-	
-	return total >= k;
-}
 
 void solve() {
-	ll n, s;
-	cin >> n >> s;
+	ll n, k, m;
+	cin >> n >> k >> m;
+	map<ll, ll> count;
 	vector<ll> arr(n);
 	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
 	}
-	ll sum = 0;
-	int i = 0;
-	ll ans = n;
-	for (int j = 0; j < n; j++) {
-		sum += arr[j];
-		while (sum >= s) {
-			ans = min(ans, j-i+1);
-			sum -= arr[i++];
+	vector<ll> rem(n), ans;
+	ll ansRem = -1;
+	for (int i = 0; i < n; i++) {
+		rem[i] = arr[i]%m;
+		count[rem[i]]++;
+		if (count[rem[i]] == k) {
+			ansRem = rem[i];
+			break;
 		}
 	}
-	cout << ans << "\n";
+	ll idx = 0;
+	if (ansRem == -1) {
+		no();
+		return;
+	}
+	yes();
+	for (int i = 0; i < n; i++) {
+		if (rem[i] == ansRem) {
+			cout << arr[i] << " ";
+		}
+	}
+	cout << "\n";
 }
-
 
 
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    	solve();	
+
+    	solve();
+	
 	
 }
 
