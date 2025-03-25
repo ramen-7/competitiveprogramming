@@ -55,82 +55,47 @@ struct compare {
 	}
 };
 
-bool isPossible(ll lim, vector<ll>& arr, ll n, ll x, ll a, ll y, ll b, ll k, ll LCM) {
-	ll total = 0;
-	ll idx = n-1;
-	ll big, small, bigP, smallP;
-	if (x > y) {
-		big = x;
-		bigP = a;
-		small = y;
-		smallP = b;
-	} else {
-		big = y;
-		bigP = b;
-		small = x;
-		smallP = a;
-	}
-	
-	ll countLCM = lim/LCM;
-	ll countBig = (lim/bigP) - countLCM;
-	ll countSmall = (lim/smallP) - countLCM;
-	
-//	cout << countLCM << endl;
-	
-	while (idx >= 0 && countLCM > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (x+y);
-		countLCM--;
-		lim--;
-	}
-	
-//	cout << "afterLCM = " << total << endl;
-	
-	while (idx >= 0 && countBig > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (big);
-		countBig--;
-		lim--;
-	}
-	
-//	cout << "afterBig = " << total << endl;
-	
-	while (idx >= 0 && countSmall > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (small);
-		countSmall--;
-		lim--;
-	}
-	
-//	cout << "afterSmall = " << total << endl;
-	
-	return total >= k;
+void printMap(unordered_map<ll, ll>& mp) {
+	unordered_map<ll, ll>::iterator it = mp.begin();
+
+    // Iterate through the map and print the elements
+    while (it != mp.end()) {
+        cout << "Key: " << it->first
+             << ", Value: " << it->second << endl;
+        ++it;
+    }
+    cout << "----" << endl;
 }
 
 void solve() {
-	ll n, s;
-	cin >> n >> s;
+	ll n;
+	cin >> n;
 	vector<ll> arr(n);
 	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
 	}
-	ll sum = 0;
-	int i = 0;
-	ll ans = n;
-	for (int j = 0; j < n; j++) {
-		sum += arr[j];
-		while (sum >= s) {
-			ans = min(ans, j-i+1);
-			sum -= arr[i++];
-		}
+	ll mid = -1;
+	if (n % 2 == 1) {
+		mid = n/2;
+	}
+	ll ans = 0;
+	for (int i = 0; i < (n/2); i++) {
+		ll val = abs(arr[i] - arr[n-i-1]);
+		ans = __gcd(ans, val);
 	}
 	cout << ans << "\n";
-}
-
+} 
 
 
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    	solve();	
+	ll t;
+	cin >> t;
+	while (t --> 0) {
+		solve();
+	}
 	
 }
 

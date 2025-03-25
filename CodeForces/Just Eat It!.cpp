@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
 /* TYPES  */
 #define ll long long
 #define pii pair<int, int>
@@ -25,6 +24,7 @@ template <class T>
 /* UTILS */
 //#define PI 3.1415926535897932384626433832795
 #define read(type) readInt<type>()
+#define all(v) v.begin(), v.end()
 ll min(ll a,int b) { if (a<b) return a; return b; }
 ll min(int a,ll b) { if (a<b) return a; return b; }
 ll max(ll a,int b) { if (a>b) return a; return b; }
@@ -55,83 +55,49 @@ struct compare {
 	}
 };
 
-bool isPossible(ll lim, vector<ll>& arr, ll n, ll x, ll a, ll y, ll b, ll k, ll LCM) {
-	ll total = 0;
-	ll idx = n-1;
-	ll big, small, bigP, smallP;
-	if (x > y) {
-		big = x;
-		bigP = a;
-		small = y;
-		smallP = b;
-	} else {
-		big = y;
-		bigP = b;
-		small = x;
-		smallP = a;
-	}
-	
-	ll countLCM = lim/LCM;
-	ll countBig = (lim/bigP) - countLCM;
-	ll countSmall = (lim/smallP) - countLCM;
-	
-//	cout << countLCM << endl;
-	
-	while (idx >= 0 && countLCM > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (x+y);
-		countLCM--;
-		lim--;
-	}
-	
-//	cout << "afterLCM = " << total << endl;
-	
-	while (idx >= 0 && countBig > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (big);
-		countBig--;
-		lim--;
-	}
-	
-//	cout << "afterBig = " << total << endl;
-	
-	while (idx >= 0 && countSmall > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (small);
-		countSmall--;
-		lim--;
-	}
-	
-//	cout << "afterSmall = " << total << endl;
-	
-	return total >= k;
-}
 
 void solve() {
-	ll n, s;
-	cin >> n >> s;
-	vector<ll> arr(n);
+	ll n;
+	cin >> n;
+	ll sum = 0;
+	vector<ll> arr(n), prefixSum(n+1, 0), suffixSum(n+1, 0);
 	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
 	}
-	ll sum = 0;
-	int i = 0;
-	ll ans = n;
-	for (int j = 0; j < n; j++) {
-		sum += arr[j];
-		while (sum >= s) {
-			ans = min(ans, j-i+1);
-			sum -= arr[i++];
+	ll pSum = 0, sSum = 0;
+	for (int i = 0; i < n; i++) {
+		pSum += arr[i];
+		prefixSum[i+1] = pSum;
+	}
+	for (int i = n-1; i >= 0; i--) {
+		sSum += arr[i];
+		suffixSum[i] = sSum;
+	}
+//	for (int i = 0; i <= n; i++) {
+//		cout << prefixSum[i] << " ";
+//	}
+//	cout << "\n";
+//	for (int i = 0; i <= n; i++) {
+//		cout << suffixSum[i] << " ";
+//	}
+//	cout << "\n";
+	for (int i = 0; i <= n; i++) {
+		if (i > 0 && prefixSum[i] <= 0 || suffixSum[i] <= 0 && i < n) {
+			no();
+			return;
 		}
 	}
-	cout << ans << "\n";
+	yes();
 }
-
 
 
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    	solve();	
-	
+	ll t;
+	cin >> t;
+	while (t --> 0) {
+		solve();
+	}
 }
-
-

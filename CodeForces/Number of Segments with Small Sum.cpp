@@ -55,54 +55,6 @@ struct compare {
 	}
 };
 
-bool isPossible(ll lim, vector<ll>& arr, ll n, ll x, ll a, ll y, ll b, ll k, ll LCM) {
-	ll total = 0;
-	ll idx = n-1;
-	ll big, small, bigP, smallP;
-	if (x > y) {
-		big = x;
-		bigP = a;
-		small = y;
-		smallP = b;
-	} else {
-		big = y;
-		bigP = b;
-		small = x;
-		smallP = a;
-	}
-	
-	ll countLCM = lim/LCM;
-	ll countBig = (lim/bigP) - countLCM;
-	ll countSmall = (lim/smallP) - countLCM;
-	
-//	cout << countLCM << endl;
-	
-	while (idx >= 0 && countLCM > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (x+y);
-		countLCM--;
-		lim--;
-	}
-	
-//	cout << "afterLCM = " << total << endl;
-	
-	while (idx >= 0 && countBig > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (big);
-		countBig--;
-		lim--;
-	}
-	
-//	cout << "afterBig = " << total << endl;
-	
-	while (idx >= 0 && countSmall > 0 && lim > 0) {
-		total += (arr[idx--]/100) * (small);
-		countSmall--;
-		lim--;
-	}
-	
-//	cout << "afterSmall = " << total << endl;
-	
-	return total >= k;
-}
 
 void solve() {
 	ll n, s;
@@ -113,14 +65,16 @@ void solve() {
 	}
 	ll sum = 0;
 	int i = 0;
-	ll ans = n;
+	ll ans = 0;
 	for (int j = 0; j < n; j++) {
 		sum += arr[j];
-		while (sum >= s) {
-			ans = min(ans, j-i+1);
+//		cout << sum << endl;
+		while (sum > s) {
 			sum -= arr[i++];
 		}
-	}
+		ans += (j-i+1);
+	} 
+
 	cout << ans << "\n";
 }
 
@@ -130,7 +84,7 @@ int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    	solve();	
+    solve();	
 	
 }
 

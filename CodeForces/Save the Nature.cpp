@@ -105,21 +105,31 @@ bool isPossible(ll lim, vector<ll>& arr, ll n, ll x, ll a, ll y, ll b, ll k, ll 
 }
 
 void solve() {
-	ll n, s;
-	cin >> n >> s;
+	ll n, x, a, y, b, k;
+	cin >> n;
 	vector<ll> arr(n);
 	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
 	}
-	ll sum = 0;
-	int i = 0;
-	ll ans = n;
-	for (int j = 0; j < n; j++) {
-		sum += arr[j];
-		while (sum >= s) {
-			ans = min(ans, j-i+1);
-			sum -= arr[i++];
+	cin >> x >> a >> y >> b >> k;
+	ll l = 0, r = n;
+	ll ans = -1;
+	sort(arr.begin(), arr.end());
+//	for (int i = 0; i < n; i++) {
+////		cout << arr[i] << " ";
+//	}
+//	cout << endl;
+	ll LCM = lcm(a, b);
+	while (l <= r) {
+		ll mid = (l+r)/2;
+//		cout << "lim = " << mid << endl;
+		if (isPossible(mid, arr, n, x, a, y, b, k, LCM)) {
+			ans = mid;
+			r = mid-1;
+		} else {
+			l = mid+1;
 		}
+//		cout << "---------------------------" << endl;
 	}
 	cout << ans << "\n";
 }
@@ -130,8 +140,11 @@ int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
+    ll t;
+    cin >> t;
+    while (t --> 0) {
     	solve();	
-	
+	}
 }
 
 

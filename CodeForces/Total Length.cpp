@@ -111,15 +111,17 @@ void solve() {
 	for (int i = 0; i < n; i++) {
 		cin >> arr[i];
 	}
-	ll sum = 0;
 	int i = 0;
-	ll ans = n;
+	ll total = 0;
+	ll ans = 0;
 	for (int j = 0; j < n; j++) {
-		sum += arr[j];
-		while (sum >= s) {
-			ans = min(ans, j-i+1);
-			sum -= arr[i++];
+		total += arr[j];
+		while (total > s) {
+			total -= arr[i++];
 		}
+		ll len = j-i+1;
+		ll add = (len*(len+1))/2;
+		ans += add;
 	}
 	cout << ans << "\n";
 }
