@@ -55,16 +55,41 @@ struct compare {
 	}
 };
 
-ll getFirstDigit(ll n) {
-	ll digits = log10(n);
-	return n/pow(10,digits);
-}
-
 void solve() {
 	ll n;
 	cin >> n;
-
-	cout <<  floor(log10(n))*9 + getFirstDigit(n) << "\n";
+	vector<ll> arr(n);
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+	}
+	vector<bool> taken(n, false);
+	sort(arr.begin(), arr.end());
+	multiset<ll> seen;
+	
+	ll globalGCD = -1;
+		
+		ll b = -1;
+	for (int i = 0; i < n && globalGCD == -1; i++) {
+		ll a = arr[i];
+		for (int j = n-1; j >= 0 && globalGCD == -1; j--) {
+			if (j == i) {
+				continue;
+			}
+			if (gcd(a, arr[j]) <= 2) {
+				b = arr[j];
+				globalGCD = gcd(a, b);
+				seen.insert(a);
+				seen.insert(b);
+				taken[i] = true;
+				taken[j] = true;
+			}
+		}
+	}
+	if (b == -1) {
+			no();
+		return;
+	}
+	yes();
 	
 } 
 
