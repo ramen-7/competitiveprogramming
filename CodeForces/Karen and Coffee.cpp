@@ -56,28 +56,35 @@ struct compare {
 };
 
 void solve() {
-	ll n;
-	cin >> n;
-	vector<ll> arr(n);
-	ll sum = 0;
+	ll n, q, k;
+	cin >> n >> k >> q;
+	vector<ll> diffArray(200002, 0);
+	vector<ll> prefixSum(200002, 0);
+	
 	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
+		ll l, r;
+		cin >> l >> r;
+		diffArray[l]++;
+		diffArray[r+1]--;
 	}
-	vector<ll> prefixSum(n+1, 0);
-	map<ll, ll> count;
-	ll ans = 0;
-	count[0]++;
-	for (int i = 1; i <= n; i++) {
-		prefixSum[i] = prefixSum[i-1] + arr[i-1];
-		ll searchVal = (prefixSum[i]%n + n)%n;
-//		cout << prefixSum[i] << ": " << searchVal << endl;
-		if (count.find(searchVal) != count.end()) {
-			ans += count[searchVal];
-		}
-		count[searchVal]++;
+	
+	prefixSum[0] = diffArray[0];
+	for (int i = 1; i < 200002; i++) {
+		prefixSum[i] = prefixSum[i-1] + diffArray[i];
 	}
-	cout << ans << '\n';
-} 
+	
+	vector<ll> preSum(200002, 0);
+	preSum[0] = prefixSum[0] >= k;
+	for (int i = 1; i < 200002; i++) {
+		preSum[i] = preSum[i-1] + (prefixSum[i] >= k);
+	}
+	
+	for (int i = 0; i < q; i++) {
+		ll x, y;
+		cin >> x >> y;
+		cout << preSum[y]-preSum[x-1] << '\n';
+	}
+}  
 
 
 int main() {

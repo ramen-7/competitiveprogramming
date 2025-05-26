@@ -56,27 +56,42 @@ struct compare {
 };
 
 void solve() {
-	ll n;
-	cin >> n;
-	vector<ll> arr(n);
-	ll sum = 0;
-	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
-	}
-	vector<ll> prefixSum(n+1, 0);
-	map<ll, ll> count;
-	ll ans = 0;
-	count[0]++;
+	ll n, q;
+	cin >> n >> q;
+	vector<vector<char>> arr(n+1, vector<char> (n+1, '.'));
 	for (int i = 1; i <= n; i++) {
-		prefixSum[i] = prefixSum[i-1] + arr[i-1];
-		ll searchVal = (prefixSum[i]%n + n)%n;
-//		cout << prefixSum[i] << ": " << searchVal << endl;
-		if (count.find(searchVal) != count.end()) {
-			ans += count[searchVal];
+		for (int j = 1; j <= n; j++) {
+			cin >> arr[i][j];
 		}
-		count[searchVal]++;
 	}
-	cout << ans << '\n';
+//	for (int i = 1; i <= n; i++) {
+//		for (int j = 1; j <= n; j++) {
+//			cout << arr[i][j] << " ";
+//		}
+//		cout << endl;
+//	}
+//	cout << "----------" << endl;
+	vector<vector<ll>> count(n+1, vector<ll> (n+1, 0));
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) {
+			count[i][j] = count[i][j-1] + (arr[i][j] == '*');
+//			cout << count[i][j] << " ";
+		}
+//		cout << endl;
+	}
+//	cout << "----------" << endl;
+	
+	for (int i = 0; i < q; i++) {
+		ll ans = 0;
+		ll x1, y1, x2, y2;
+		cin >> x1 >> y1 >> x2 >> y2;
+		for (int x = x1; x <= x2; x++) {
+//			cout << "count[x][y2] = " << count[x][y2] << " - " <<  "count[x][y1-1] = " << count[x][y1-1] << endl;
+			ans += (count[x][y2] - count[x][y1-1]);
+		}
+		cout << ans << endl;
+	}
+	
 } 
 
 

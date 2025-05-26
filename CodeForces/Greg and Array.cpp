@@ -56,28 +56,46 @@ struct compare {
 };
 
 void solve() {
-	ll n;
-	cin >> n;
-	vector<ll> arr(n);
-	ll sum = 0;
-	for (int i = 0; i < n; i++) {
+	ll n, m, k;
+	cin >> n >> m >> k;
+	vector<ll> arr(n+1);
+	for (int i = 1; i <= n; i++) {
 		cin >> arr[i];
 	}
-	vector<ll> prefixSum(n+1, 0);
-	map<ll, ll> count;
-	ll ans = 0;
-	count[0]++;
-	for (int i = 1; i <= n; i++) {
-		prefixSum[i] = prefixSum[i-1] + arr[i-1];
-		ll searchVal = (prefixSum[i]%n + n)%n;
-//		cout << prefixSum[i] << ": " << searchVal << endl;
-		if (count.find(searchVal) != count.end()) {
-			ans += count[searchVal];
-		}
-		count[searchVal]++;
+	vector<vector<ll>> operations(m+1, vector<ll>(3, 0));
+	for (int i = 1; i <= m; i++) {
+		cin >> operations[i][0] >> operations[i][1] >> operations[i][2];
 	}
-	cout << ans << '\n';
-} 
+	vector<ll> diffArray(m+2, 0);
+	for (int i = 1; i <= k; i++) {
+		ll l, r;
+		cin >> l >> r;
+		diffArray[l]++;
+		diffArray[r+1]--;
+	}
+	vector<ll> pSum(m+2, 0);
+	pSum[1] = diffArray[1];
+	for (int i = 2; i <= m; i++) {
+		pSum[i] = pSum[i-1] + diffArray[i];
+	}
+	vector<ll> differenceArray(n+2, 0);
+	for (int i = 1; i <= m; i++) {
+		pSum[i] *= operations[i][2];
+		ll l = operations[i][0];
+		ll r = operations[i][1];
+		differenceArray[l] += pSum[i];
+		differenceArray[r+1] -= pSum[i];
+	}
+	vector<ll> prefixSum(n+1, 0);
+	prefixSum[1] = differenceArray[1];
+	for (int i = 2; i <= n; i++) {
+		prefixSum[i] = prefixSum[i-1] + differenceArray[i];
+	}
+	for (int i = 1; i <= n; i++) {
+		cout << arr[i]+prefixSum[i] << " ";
+	}
+	cout << '\n';
+}  
 
 
 int main() {
