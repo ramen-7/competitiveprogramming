@@ -62,8 +62,25 @@ struct compare {
 	}
 };
 
-void solve() {
-
+ll solve(ll n, ll x, vector<ll>& arr,vector<ll>& dp) {
+	if (x == 0) {
+		return 0;
+	}
+	if (x < 0) {
+		return LLONG_MAX/2;
+	}
+	if (dp[x] != -1) {
+		return dp[x];
+	}
+	
+	ll ans = LLONG_MAX/2;
+	for (ll coin: arr) { 
+		if (x - coin >= 0) {
+			ans = min(ans, 1 + solve(n, x - coin, arr, dp));
+		}
+	}
+	
+	return dp[x] = ans;
 } 
 
 
@@ -71,11 +88,18 @@ int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    ll t;
-    cin >> t;
-    while (t-- > 0) {
-    	solve();		
+    ll n, x;
+	cin >> n >> x;
+	vector<ll> arr(n);
+	vector<ll> dp(x + 1, -1);
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
 	}
+    ll ans = solve(n, x, arr, dp);		
+    if (ans >= LLONG_MAX/2) {
+    	ans = -1;
+	}
+	cout << ans << endl;
 }
 
 

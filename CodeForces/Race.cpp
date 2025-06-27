@@ -63,7 +63,22 @@ struct compare {
 };
 
 void solve() {
-
+	ll a, x, y;
+	cin >> a >> x >> y;
+	ll minPoint = min(x, y);
+	ll maxPoint = max(x, y);
+	
+	if (minPoint == a || maxPoint == a) {
+		no();
+		return;
+	}
+	
+	if (minPoint < a && a < maxPoint) {
+		no();
+		return;
+	}
+	
+	yes();
 } 
 
 

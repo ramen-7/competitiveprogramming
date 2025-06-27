@@ -63,7 +63,56 @@ struct compare {
 };
 
 void solve() {
-
+	ll n;
+	cin >> n;
+	vector<ll> arr(n);
+	
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+	}
+	
+	ll ans = -1;
+	
+	if (n == 2) {
+		if (abs(arr[0] - arr[1]) <= 1) {
+			cout << 0 << '\n';
+			return;
+		} else {
+			cout << -1 << '\n';
+			return;
+		}
+	}
+	
+	ll curVal = arr[0];
+	bool asc = true;
+	ll minDif = INT_MAX;
+	
+	for (int i = 1; i < n; i++) {
+		if (curVal > arr[i]) {
+			asc = false;
+		}
+		minDif = min(abs(arr[i] - curVal), minDif);
+		curVal = arr[i];
+		
+	}
+	
+//	cout << "minDif = " << minDif << endl;
+	
+	if (asc && minDif > 1) {
+		cout << -1 << '\n';
+		return;
+	}
+	
+	for (int i = 0; i < n-1; i++) {
+		if (abs(arr[i] - arr[i+1]) <= 1) {
+			cout << 0 << '\n';
+			return;
+		}
+		
+	}
+	
+	cout << 1 << '\n';
+	
 } 
 
 

@@ -62,8 +62,31 @@ struct compare {
 	}
 };
 
-void solve() {
 
+void solve() {
+	ll n;
+	cin >> n;
+	vector<ll> arr(n);
+	
+	ll ans = -1;
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+	}
+	set<ll> setArr(arr.begin(), arr.end());
+	
+	
+	for (int i = 1; i <= 1024; i++) {
+		set<ll> newArr;
+		for (int j = 0; j < n; j++) {
+			newArr.insert(arr[j] ^ i);
+		}		
+		if (newArr == setArr) {
+			cout << i << "\n";
+			return;
+		}
+	}
+	
+	cout << -1 << '\n';
 } 
 
 

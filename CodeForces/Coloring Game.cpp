@@ -63,7 +63,37 @@ struct compare {
 };
 
 void solve() {
-
+	ll n;
+	cin >> n;
+	ll ans = 0;
+	vector<ll> arr(n);
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+	}
+	sort(arr.begin(), arr.end());
+	
+	for (int i = 0; i < n; i++) {
+		ll maxVal = arr[i];
+		ll finalMax = max(maxVal*2, arr[n-1]);
+		if (i == n-1) {
+			finalMax = max(maxVal*2, arr[n-2]);
+		}
+		ll greaterThan = finalMax - maxVal;
+		
+		ll l = 0, r = i-1;
+		while (l < r) {
+			ll sum = arr[l] + arr[r];
+			if (sum > greaterThan) {
+				ans += (r-l);
+				r--;
+			} else {
+				l++;
+			}
+		}
+	}
+	
+	cout << ans << '\n';
+	
 } 
 
 
