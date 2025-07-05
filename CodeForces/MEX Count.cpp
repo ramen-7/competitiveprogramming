@@ -34,6 +34,12 @@ ll gcd(ll a,ll b) { if (b==0) return a; return gcd(b, a%b); }
 ll lcm(ll a,ll b) { return a/gcd(a,b)*b; }
 string to_upper(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='a' && a[i]<='z') a[i]-='a'-'A'; return a; }
 string to_lower(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='A' && a[i]<='Z') a[i]+='a'-'A'; return a; }
+string llToBinaryString(ll n, int bits) {
+    string s;
+    for (int i = bits - 1; i >= 0; --i)
+        s += (n & (1LL << i)) ? '1' : '0';
+    return s;
+}
 void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
 void yes() { cout<<"YES\n"; }
@@ -56,36 +62,49 @@ struct compare {
 	}
 };
 
-string llToBinaryString(ll n, int bits) {
-    string s;
-    for (int i = bits - 1; i >= 0; --i)
-        s += (n & (1LL << i)) ? '1' : '0';
-    return s;
-}
-
 void solve() {
-	string a, b;
-	cin >> a >> b;
-	reverse(a.begin(), a.end());
-	reverse(b.begin(), b.end());
-	ll ans = 0;
-	int i = 0;
-	for (i = 0; i < b.size(); i++) {
-		if (b[i] == '1') {
-			break;
+	ll n;
+	cin >> n;
+	vector<ll> arr(n), count(n+1, 0);
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+		count[arr[i]]++;
+	}
+	
+	vector<bool> prefixPresent(n+1, false);
+	prefixPresent[0] = true;
+	
+
+	vector<ll> diff(n+5, 0);
+	bool allPresent = true;
+	for (int i = 0; i <= n; i++) {
+		
+		if (allPresent) {
+			ll l = count[i], r = n-i;
+			if (l <= r) {
+				diff[l] += 1;
+				diff[r+1] -= 1;
+			}
+		}
+		
+		if (count[i] == 0) {
+			allPresent = false;
 		}
 	}
-//	cout << i << endl;
-	ans = i;
-	for (; i < a.size(); i++) {
-		if (a[i] == '1') {
-//			cout << i << endl;
-			ans = i-ans;
-			break;
-		}
+	
+	vector<int> ans(n+1);
+	ans[0] = 1;
+	ll curVal = 0;
+	for (int i = 1; i <= n; i++) {
+		curVal += diff[i];
+		ans[i] = curVal+1;
 	}
-	cout << ans << '\n';
-} 
+	
+	for (int i = 0; i <= n; i++) {
+		cout << ans[i] << " ";
+	}
+	cout << '\n';
+}  
 
 
 int main() {

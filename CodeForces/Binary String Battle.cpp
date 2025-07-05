@@ -34,6 +34,12 @@ ll gcd(ll a,ll b) { if (b==0) return a; return gcd(b, a%b); }
 ll lcm(ll a,ll b) { return a/gcd(a,b)*b; }
 string to_upper(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='a' && a[i]<='z') a[i]-='a'-'A'; return a; }
 string to_lower(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='A' && a[i]<='Z') a[i]+='a'-'A'; return a; }
+string llToBinaryString(ll n, int bits) {
+    string s;
+    for (int i = bits - 1; i >= 0; --i)
+        s += (n & (1LL << i)) ? '1' : '0';
+    return s;
+}
 void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
 void yes() { cout<<"YES\n"; }
@@ -56,35 +62,48 @@ struct compare {
 	}
 };
 
-string llToBinaryString(ll n, int bits) {
-    string s;
-    for (int i = bits - 1; i >= 0; --i)
-        s += (n & (1LL << i)) ? '1' : '0';
-    return s;
-}
-
 void solve() {
-	string a, b;
-	cin >> a >> b;
-	reverse(a.begin(), a.end());
-	reverse(b.begin(), b.end());
-	ll ans = 0;
-	int i = 0;
-	for (i = 0; i < b.size(); i++) {
-		if (b[i] == '1') {
+	ll n, k;
+	cin >> n >> k;
+	string s;
+	cin >> s;
+	
+	ll count1 = 0;
+	for (int i = 0; i < n; i++) {
+		if (s[i] == '1') {
+			count1++;
+		}
+	}
+	if (count1 <= k) {
+		cout << "Alice" << '\n';
+		return;
+	}
+	if (n >= 2*k) {
+		cout << "Bob" << '\n';
+		return;
+	}
+	
+	vector<int> prefixSum(n+1, 0);
+	for(int i = 0; i<n; i++){
+		prefixSum[i+1] = prefixSum[i] + (s[i]=='1');
+	}
+	
+	bool possible = false;
+	// bob can make max n-k 1s only adjacently
+	for(int i = 0; i <= n-k; i++){
+		int substringCount1 = prefixSum[i+k] - prefixSum[i];
+		int aliceCount1 = count1 - substringCount1;
+		if (aliceCount1 <= k) {
+			possible = true;
 			break;
 		}
 	}
-//	cout << i << endl;
-	ans = i;
-	for (; i < a.size(); i++) {
-		if (a[i] == '1') {
-//			cout << i << endl;
-			ans = i-ans;
-			break;
-		}
+	
+	if (possible) {
+		cout << "Alice" << '\n';
+	} else {
+		cout << "Bob" << '\n';
 	}
-	cout << ans << '\n';
 } 
 
 

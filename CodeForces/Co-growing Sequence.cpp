@@ -34,6 +34,12 @@ ll gcd(ll a,ll b) { if (b==0) return a; return gcd(b, a%b); }
 ll lcm(ll a,ll b) { return a/gcd(a,b)*b; }
 string to_upper(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='a' && a[i]<='z') a[i]-='a'-'A'; return a; }
 string to_lower(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='A' && a[i]<='Z') a[i]+='a'-'A'; return a; }
+string llToBinaryString(ll n, int bits) {
+    string s;
+    for (int i = bits - 1; i >= 0; --i)
+        s += (n & (1LL << i)) ? '1' : '0';
+    return s;
+}
 void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
 void yes() { cout<<"YES\n"; }
@@ -56,35 +62,43 @@ struct compare {
 	}
 };
 
-string llToBinaryString(ll n, int bits) {
-    string s;
-    for (int i = bits - 1; i >= 0; --i)
-        s += (n & (1LL << i)) ? '1' : '0';
-    return s;
+ll countBits(ll n) {
+	ll count = 0;
+	while (n > 0) {
+		n = n & (n-1);
+		count++;
+	}
+	return count;
+}
+
+ll invertBits (ll n) {
+	if (n == 0) {
+		return 1;
+	}
+	
+	ll bits = (ll)log2(n)+1;
+	ll mask = (1 << bits) - 1;
+	return (~n) & mask;
 }
 
 void solve() {
-	string a, b;
-	cin >> a >> b;
-	reverse(a.begin(), a.end());
-	reverse(b.begin(), b.end());
-	ll ans = 0;
-	int i = 0;
-	for (i = 0; i < b.size(); i++) {
-		if (b[i] == '1') {
-			break;
-		}
+	ll n;
+	cin >> n;
+	vector<ll> arr(n);
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
 	}
-//	cout << i << endl;
-	ans = i;
-	for (; i < a.size(); i++) {
-		if (a[i] == '1') {
-//			cout << i << endl;
-			ans = i-ans;
-			break;
-		}
+	vector<ll> ans(n);
+	ans[0] = 0;
+	for (int i = 1; i < n; i++) {
+		ll prevVal = ans[i-1] ^ arr[i-1];
+		ll curVal = prevVal & ~(arr[i]);
+		ans[i] = curVal;
 	}
-	cout << ans << '\n';
+	for (int i = 0; i < n; i++) {
+		cout << ans[i] << " ";
+	}
+	cout << '\n';
 } 
 
 

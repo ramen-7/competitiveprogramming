@@ -34,6 +34,12 @@ ll gcd(ll a,ll b) { if (b==0) return a; return gcd(b, a%b); }
 ll lcm(ll a,ll b) { return a/gcd(a,b)*b; }
 string to_upper(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='a' && a[i]<='z') a[i]-='a'-'A'; return a; }
 string to_lower(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='A' && a[i]<='Z') a[i]+='a'-'A'; return a; }
+string llToBinaryString(ll n, int bits) {
+    string s;
+    for (int i = bits - 1; i >= 0; --i)
+        s += (n & (1LL << i)) ? '1' : '0';
+    return s;
+}
 void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
 void yes() { cout<<"YES\n"; }
@@ -56,35 +62,31 @@ struct compare {
 	}
 };
 
-string llToBinaryString(ll n, int bits) {
-    string s;
-    for (int i = bits - 1; i >= 0; --i)
-        s += (n & (1LL << i)) ? '1' : '0';
-    return s;
-}
-
-void solve() {
-	string a, b;
-	cin >> a >> b;
-	reverse(a.begin(), a.end());
-	reverse(b.begin(), b.end());
+ll solve(ll n, ll x, vector<ll>& arr,vector<vector<ll>>& dp, ll idx) {
+	if (x == 0) {
+		return 1;
+	}
+	if (x < 0) {
+		return 0;
+	}
+	if (dp[x][idx] != -1) {
+		return dp[x][idx];
+	}
+	
 	ll ans = 0;
-	int i = 0;
-	for (i = 0; i < b.size(); i++) {
-		if (b[i] == '1') {
-			break;
+	for (int i = idx; i < n; i++) {
+		ll coin = arr[i];
+		if (x - coin >= 0) {
+			ans = (ans + solve(n, x - coin, arr, dp, i)) % MOD;
 		}
 	}
-//	cout << i << endl;
-	ans = i;
-	for (; i < a.size(); i++) {
-		if (a[i] == '1') {
-//			cout << i << endl;
-			ans = i-ans;
-			break;
-		}
-	}
-	cout << ans << '\n';
+//	for (ll coin: arr) { 
+//		if (x - coin >= 0) {
+//			ans = (ans + solve(n, x - coin, arr, dp)) % MOD;
+//		}
+//	}
+	
+	return dp[x][idx] = ans%MOD;
 } 
 
 
@@ -92,11 +94,15 @@ int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    ll t;
-    cin >> t;
-    while (t-- > 0) {
-    	solve();		
+    ll n, x;
+	cin >> n >> x;
+	vector<ll> arr(n);
+	vector<vector<ll>> dp(x + 1, vector<ll>(n + 1, -1));
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
 	}
+    ll ans = solve(n, x, arr, dp, 0);		
+	cout << ans << endl;
 }
 
 
