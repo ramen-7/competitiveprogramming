@@ -1,21 +1,7 @@
 #include <bits/stdc++.h>
+#include <type_traits>
 using namespace std;
 
-/* clang-format off */
-struct custom_hash {
-    static uint64_t splitmix64(uint64_t x) {
-        // http://xorshift.di.unimi.it/splitmix64.c
-        x += 0x9e3779b97f4a7c15;
-        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
-        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
-        return x ^ (x >> 31);
-    }
-
-    size_t operator()(uint64_t x) const {
-        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
-        return splitmix64(x + FIXED_RANDOM);
-    }
-};
 
 /* TYPES  */
 #define ll long long
@@ -36,9 +22,9 @@ struct custom_hash {
 
 /* PRINTS */
 template <class T>
-void print_v(vector<T> &v) { cout << "{"; for (auto x : v) cout << x << ","; cout << "\b}"; }
 
 /* UTILS */
+#define MOD 1000000007
 //#define PI 3.1415926535897932384626433832795
 #define read(type) readInt<type>()
 ll min(ll a,int b) { if (a<b) return a; return b; }
@@ -49,6 +35,12 @@ ll gcd(ll a,ll b) { if (b==0) return a; return gcd(b, a%b); }
 ll lcm(ll a,ll b) { return a/gcd(a,b)*b; }
 string to_upper(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='a' && a[i]<='z') a[i]-='a'-'A'; return a; }
 string to_lower(string a) { for (int i=0;i<(int)a.size();++i) if (a[i]>='A' && a[i]<='Z') a[i]+='a'-'A'; return a; }
+string llToBinaryString(ll n, int bits) {
+    string s;
+    for (int i = bits - 1; i >= 0; --i)
+        s += (n & (1LL << i)) ? '1' : '0';
+    return s;
+}
 void print_arr(int a[], int size) { for (int i=0; i<size; i++) cout << a[i] << " ";}
 bool prime(ll a) { if (a==1) return 0; for (int i=2;i<=round(sqrt(a));++i) if (a%i==0) return 0; return 1; }
 void yes() { cout<<"YES\n"; }
@@ -60,45 +52,64 @@ typedef unsigned long int uint32;
 typedef long long int int64;
 typedef unsigned long long int  uint64;
 
-void solve() {
-	ll n, k;
-	cin >> n >> k;
-	vector<ll> arr(n);
-	ll count = 0;
-	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
-		if (arr[i] % 2 == 0) {
-			count++;
+struct compare {
+	bool operator()(const pair<ll, ll>& a, const pair<ll, ll>& b) {
+		if (a.first == b.first) {
+			// ascending
+			return a.second > b.second;
 		}
+		// descending
+		return a.first < b.first;
 	}
-	ll ans = LLONG_MAX;
-		for (int i = 0; i < n; i++) {
-			ll mod = arr[i]%k;
-			if (mod == 0) {
-				ans = 0;
-				continue;
-			}
-			ll rem = k-mod;
-			ans = min(ans, rem);
-		}	
-	
-	if (k == 4) {
-		ans = min(ans, max(0, 2-count));
-	}
-	
-	cout << ans << "\n";
+};
+
+void solve() {
+  string s, t;
+  cin >> s >> t;
+  ll n = s.size(),  m = t.size();
+  ll i = n-1, j = m-1;
+  vector<int> count(26, 0);
+  for (int i = 0; i < m; i++) {
+    count[t[i] - 'A']++;
+  }
+
+  for (; i >= 0; i--) {
+    if (t[j] == s[i]) {
+      // we should be expecting count[t[j]] values of this character ahead
+    //   cout << "expect " << t[j] << " = " << count[t[j] - 'A'] << '\n';
+      ll c = 0;
+      for (int k = i; k < n; k++) {
+        if(s[k] == t[j]) {
+            // cout << s[k] << "==" << t[j] << '\n';
+            c++;
+        }
+      }
+      if (c > count[t[j] - 'A']) {
+        // cout << t[j] << ": " << c << " > " << count[t[j] - 'A'] << '\n';
+        no();
+        return;
+      }
+      j--;
+    }
+  }
+  if (j == -1) {
+    yes();
+  } else {
+    no();
+  }
+
+  return;
 }
-
-
 
 int main() {
 	ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    int t;
+    ll t;
     cin >> t;
-    while (t --> 0) {
-    	solve();
-    }
+    while (t-- > 0) {
+    	solve();		
+	}
 }
+
 
